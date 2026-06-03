@@ -4,37 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LinguaAI - Tutor de Idiomas Premium</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script src="https://unpkg.com/lucide@latest"></script>
-    
     <script>
         tailwind.config = {
             theme: {
-                extend: {
-                    colors: { neutral: { 950: '#0a0a0a' } }
-                }
+                extend: { colors: { neutral: { 950: '#0a0a0a' } } }
             }
         }
     </script>
     <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes zoomIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .animate-fade-in { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-zoom-in { animation: zoomIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        /* Glassmorphism utilities */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .animate-fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-zoom-in { animation: zoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+        
+        /* Markdown styles para la respuesta de la IA */
+        .ai-message-content strong { color: #60a5fa; }
+        .ai-message-content ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
     </style>
 </head>
 <body class="bg-neutral-950 text-neutral-100 font-sans selection:bg-blue-500/30">
+
+    <!-- Modal API Key -->
+    <div id="api-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+        <div class="glass border border-white/10 p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl">
+            <h2 class="text-2xl font-bold mb-2">Configura tu Motor IA</h2>
+            <p class="text-neutral-400 text-sm mb-6">Para usar este MVP en GitHub Pages sin arriesgar credenciales, ingresa tu API Key de OpenAI. Solo se guardará en tu navegador.</p>
+            <input type="password" id="api-key-input" placeholder="sk-..." class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 mb-4">
+            <button id="btn-save-key" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-colors">Iniciar Sistema</button>
+        </div>
+    </div>
 
     <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-neutral-950/50 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -44,98 +45,50 @@
                 </div>
                 <span class="font-semibold tracking-wide text-lg">Lingua<span class="text-blue-500">AI</span></span>
             </div>
-            <div class="hidden md:flex gap-6 text-sm font-medium text-neutral-400">
-                <button class="hover:text-white transition-colors">Progreso</button>
-                <button class="hover:text-white transition-colors">Roleplays</button>
-                <button class="hover:text-white transition-colors">Pronunciación</button>
-            </div>
-            <button class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-sm font-medium transition-all">
-                Dashboard
+            <button class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-sm font-medium transition-all" onclick="localStorage.removeItem('openai_key'); location.reload();">
+                Cambiar API Key
             </button>
         </div>
     </nav>
 
     <main class="pt-24 pb-12 px-6 max-w-5xl mx-auto min-h-screen flex flex-col justify-center">
         
-        <div id="hero-section" class="flex flex-col items-center text-center space-y-8 animate-fade-in w-full">
+        <!-- HERO SECTION -->
+        <div id="hero-section" class="flex flex-col items-center text-center space-y-8 animate-fade-in w-full hidden">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-4">
                 <i data-lucide="zap" class="w-4 h-4"></i>
-                <span>Motor de IA de Élite Actualizado</span>
+                <span>Agente Doble Activado</span>
             </div>
             
             <h1 class="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-500 pb-2">
                 Fluidez real. <br /> Tutor 24/7.
             </h1>
             
-            <p class="text-lg md:text-xl text-neutral-400 max-w-2xl leading-relaxed">
-                Conversa, practica y domina cualquier idioma mediante inteligencia artificial adaptativa. Sin reglas aburridas, pura inmersión.
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl mt-8">
-                <div class="p-6 rounded-2xl border border-white/10 hover:border-white/20 glass hover:bg-white/10 transition-all cursor-pointer group text-left">
-                    <i data-lucide="globe" class="text-blue-400 mb-3 w-6 h-6"></i>
-                    <h3 class="font-semibold mb-1 group-hover:text-blue-400 transition-colors">Diagnóstico Inicial</h3>
-                    <p class="text-sm text-neutral-500">Evalúa tu nivel actual y genera un plan.</p>
-                </div>
-                <div class="p-6 rounded-2xl border border-white/10 hover:border-white/20 glass hover:bg-white/10 transition-all cursor-pointer group text-left">
-                    <i data-lucide="crosshair" class="text-violet-400 mb-3 w-6 h-6"></i>
-                    <h3 class="font-semibold mb-1 group-hover:text-violet-400 transition-colors">Roleplay Inmobiliario</h3>
-                    <p class="text-sm text-neutral-500">Simulación: Venta a extranjero.</p>
-                </div>
-                <div class="p-6 rounded-2xl border border-white/10 hover:border-white/20 glass hover:bg-white/10 transition-all cursor-pointer group text-left">
-                    <i data-lucide="mic" class="text-emerald-400 mb-3 w-6 h-6"></i>
-                    <h3 class="font-semibold mb-1 group-hover:text-emerald-400 transition-colors">Entrenamiento Oral</h3>
-                    <p class="text-sm text-neutral-500">Perfecciona tu pronunciación.</p>
-                </div>
-            </div>
-
             <button id="btn-start" class="mt-8 px-8 py-4 rounded-full bg-white text-black font-semibold text-lg hover:scale-105 transition-transform flex items-center gap-2">
-                Iniciar Inmersión <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                Iniciar Diagnóstico <i data-lucide="chevron-right" class="w-5 h-5"></i>
             </button>
         </div>
 
+        <!-- CHAT MODULE -->
         <div id="chat-section" class="hidden w-full h-[80vh] flex-col rounded-3xl border border-white/10 glass overflow-hidden animate-zoom-in relative">
-            
             <div class="h-16 border-b border-white/10 flex items-center justify-between px-6 bg-neutral-900/80">
                 <div class="flex items-center gap-3">
                     <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span class="font-medium">Tutor IA - Fase de Diagnóstico</span>
+                    <span class="font-medium">Tutor IA de Élite</span>
                 </div>
-                <button id="btn-back" class="text-sm text-neutral-400 hover:text-white transition-colors">
-                    Volver
-                </button>
             </div>
 
             <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-6">
-                <div class="flex gap-4">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-violet-600 flex-shrink-0 flex items-center justify-center mt-1">
-                        <i data-lucide="bot" class="text-white w-4 h-4"></i>
-                    </div>
-                    <div class="flex flex-col gap-1 max-w-[80%]">
-                        <span class="text-xs text-neutral-500 font-medium ml-1">LinguaAI</span>
-                        <div class="glass text-neutral-100 p-4 rounded-2xl rounded-tl-none leading-relaxed border border-white/5">
-                            <p class="mb-4">Bienvenido a tu sistema de inmersión. Mi objetivo no es que memorices reglas, sino que pienses y negocies con total naturalidad.</p>
-                            <p>Para diseñar tu plan de ataque, necesito que respondas esto con honestidad:</p>
-                            <ul class="list-disc list-inside mt-2 space-y-1 text-sm text-neutral-300">
-                                <li>¿Qué idioma vamos a dominar hoy?</li>
-                                <li>¿Cuál es tu nivel actual?</li>
-                                <li>¿En qué situaciones específicas lo usarás más?</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                <!-- Los mensajes se inyectan aquí -->
             </div>
 
             <div class="p-4 bg-neutral-950/80 border-t border-white/10">
                 <div class="flex items-center gap-3 max-w-4xl mx-auto relative">
-                    <button class="p-3 text-neutral-400 hover:text-white transition-colors rounded-full hover:bg-white/10">
-                        <i data-lucide="mic" class="w-5 h-5"></i>
-                    </button>
                     <input 
                         type="text" 
                         id="chat-input"
-                        placeholder="Escribe tu respuesta o usa el micrófono para hablar..." 
-                        class="flex-1 bg-white/5 border border-white/10 rounded-full px-6 py-3 text-neutral-100 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-neutral-600"
+                        placeholder="Responde a la evaluación..." 
+                        class="flex-1 bg-white/5 border border-white/10 rounded-full px-6 py-3 text-neutral-100 focus:outline-none focus:border-blue-500/50 transition-all placeholder:text-neutral-600"
                         autocomplete="off"
                     />
                     <button id="btn-send" class="p-3 bg-white text-black hover:bg-neutral-200 transition-colors rounded-full flex items-center justify-center">
@@ -144,81 +97,182 @@
                 </div>
             </div>
         </div>
-
     </main>
 
     <script>
-        // Inicializar iconos
         lucide.createIcons();
 
-        // Controladores del DOM
+        // 1. EL MEGA PROMPT INYECTADO
+        const SYSTEM_PROMPT = `Actúa como un tutor de idiomas de clase mundial, combinando las habilidades de un lingüista, profesor universitario, coach de comunicación, especialista en adquisición de lenguas y entrenador de fluidez conversacional.
+Tu misión no es enseñarme reglas aisladas, sino llevarme a pensar, comprender, hablar, leer y escribir con naturalidad en el idioma objetivo.
+Debes comportarte como un mentor personal que adapta cada lección a mis objetivos, nivel, profesión, intereses y ritmo de aprendizaje.
+OBJETIVO PRINCIPAL: Ayudarme a alcanzar una comunicación fluida, natural y segura en el idioma que estoy aprendiendo mediante: Conversaciones reales, Corrección inteligente, Inmersión progresiva, Aprendizaje basado en contexto, Repetición estratégica, Simulaciones prácticas, Seguimiento de progreso. Tu enfoque debe priorizar la comunicación efectiva sobre la memorización.
+
+FASE 1: DIAGNÓSTICO INICIAL (DEBES EMPEZAR POR AQUÍ INMEDIATAMENTE).
+Realiza una entrevista completa para conocer: Idioma objetivo, Idioma nativo, Nivel actual, Objetivo específico, Fecha límite, Tiempo disponible por día, Situaciones donde utilizaré el idioma, Temas que más me interesan, Mis mayores dificultades.
+
+CORRECCIÓN INTELIGENTE:
+Cada vez que cometa errores utiliza esta estructura exacta:
+❌ Tu frase: [texto]
+✅ Forma correcta: [texto]
+🧠 Motivo: [explicación breve]
+💬 Forma que usaría un nativo: [versión natural]
+
+Regla absoluta: No actúes como una enciclopedia. Actúa como un tutor humano de élite. Usa un tono directo, exigente pero alentador. No uses formato markdown complejo, solo viñetas y texto simple.
+¡Inicia la Fase 1 de inmediato saludando al usuario y haciéndole las preguntas del diagnóstico!`;
+
+        let chatHistory = [
+            { role: "system", content: SYSTEM_PROMPT }
+        ];
+
+        // Controladores DOM
+        const apiModal = document.getElementById('api-modal');
+        const apiKeyInput = document.getElementById('api-key-input');
+        const btnSaveKey = document.getElementById('btn-save-key');
         const heroSection = document.getElementById('hero-section');
         const chatSection = document.getElementById('chat-section');
-        const btnStart = document.getElementById('btn-start');
-        const btnBack = document.getElementById('btn-back');
-        const btnSend = document.getElementById('btn-send');
         const chatInput = document.getElementById('chat-input');
+        const btnSend = document.getElementById('btn-send');
         const chatMessages = document.getElementById('chat-messages');
 
-        // Transición: Hero a Chat
-        btnStart.addEventListener('click', () => {
+        // Gestión de API Key
+        let API_KEY = localStorage.getItem('openai_key');
+        
+        if (API_KEY) {
+            apiModal.classList.add('hidden');
+            heroSection.classList.remove('hidden');
+        }
+
+        btnSaveKey.addEventListener('click', () => {
+            const key = apiKeyInput.value.trim();
+            if(key.startsWith('sk-')) {
+                localStorage.setItem('openai_key', key);
+                API_KEY = key;
+                apiModal.classList.add('hidden');
+                heroSection.classList.remove('hidden');
+            } else {
+                alert('Clave inválida. Debe empezar con sk-');
+            }
+        });
+
+        // Iniciar chat y llamar a OpenAI por primera vez
+        document.getElementById('btn-start').addEventListener('click', async () => {
             heroSection.classList.add('hidden');
             chatSection.classList.remove('hidden');
             chatSection.classList.add('flex');
-            chatInput.focus();
+            
+            showTyping();
+            await fetchAIResponse();
         });
 
-        // Transición: Chat a Hero
-        btnBack.addEventListener('click', () => {
-            chatSection.classList.add('hidden');
-            chatSection.classList.remove('flex');
-            heroSection.classList.remove('hidden');
-        });
+        const appendMessage = (role, text) => {
+            const isUser = role === 'user';
+            
+            // Formateo muy básico para saltos de línea
+            const formattedText = text.replace(/\n/g, '<br/>');
 
-        // Simular envío de mensaje
-        const sendMessage = () => {
-            const message = chatInput.value.trim();
-            if (!message) return;
-
-            // HTML del mensaje del usuario
-            const userHtml = `
-                <div class="flex gap-4 justify-end mt-6 animate-fade-in">
-                    <div class="flex flex-col gap-1 max-w-[80%] items-end">
-                        <span class="text-xs text-neutral-500 font-medium mr-1">Tú</span>
-                        <div class="bg-blue-600 text-white p-4 rounded-2xl rounded-tr-none leading-relaxed border border-blue-500/50 shadow-lg shadow-blue-900/20">
-                            <p>${message}</p>
+            const html = `
+                <div class="flex gap-4 ${isUser ? 'justify-end' : ''} mt-6 animate-fade-in">
+                    ${!isUser ? `
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-violet-600 flex-shrink-0 flex items-center justify-center mt-1 shadow-lg shadow-blue-500/20">
+                        <i data-lucide="bot" class="text-white w-4 h-4"></i>
+                    </div>` : ''}
+                    
+                    <div class="flex flex-col gap-1 max-w-[85%] ${isUser ? 'items-end' : ''}">
+                        <span class="text-xs text-neutral-500 font-medium ${isUser ? 'mr-1' : 'ml-1'}">${isUser ? 'Tú' : 'LinguaAI'}</span>
+                        <div class="${isUser ? 'bg-blue-600 border-blue-500/50 shadow-blue-900/20 rounded-tr-none' : 'glass border-white/5 rounded-tl-none'} text-neutral-100 p-4 rounded-2xl leading-relaxed border shadow-lg text-sm md:text-base ai-message-content">
+                            ${formattedText}
                         </div>
                     </div>
                 </div>
             `;
             
-            chatMessages.insertAdjacentHTML('beforeend', userHtml);
-            chatInput.value = '';
+            chatMessages.insertAdjacentHTML('beforeend', html);
+            lucide.createIcons();
             chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            // Como soy una IA y esto es el frontend estático, simularé una respuesta de carga
-            setTimeout(() => {
-                const typingHtml = `
-                    <div class="flex gap-4 mt-6 animate-fade-in" id="typing-indicator">
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-violet-600 flex-shrink-0 flex items-center justify-center mt-1">
-                            <i data-lucide="bot" class="text-white w-4 h-4"></i>
-                        </div>
-                        <div class="glass text-neutral-100 p-4 rounded-2xl rounded-tl-none border border-white/5 flex items-center gap-2">
-                            <div class="w-2 h-2 bg-neutral-400 rounded-full animate-bounce"></div>
-                            <div class="w-2 h-2 bg-neutral-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                            <div class="w-2 h-2 bg-neutral-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
-                        </div>
-                    </div>
-                `;
-                chatMessages.insertAdjacentHTML('beforeend', typingHtml);
-                lucide.createIcons();
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 500);
         };
 
-        btnSend.addEventListener('click', sendMessage);
+        const showTyping = () => {
+            const html = `
+                <div class="flex gap-4 mt-6 animate-fade-in" id="typing-indicator">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-violet-600 flex-shrink-0 flex items-center justify-center mt-1">
+                        <i data-lucide="bot" class="text-white w-4 h-4"></i>
+                    </div>
+                    <div class="glass p-4 rounded-2xl rounded-tl-none border border-white/5 flex items-center gap-2">
+                        <div class="w-2 h-2 bg-neutral-400 rounded-full animate-bounce"></div>
+                        <div class="w-2 h-2 bg-neutral-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        <div class="w-2 h-2 bg-neutral-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                    </div>
+                </div>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', html);
+            lucide.createIcons();
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+
+        const removeTyping = () => {
+            const el = document.getElementById('typing-indicator');
+            if(el) el.remove();
+        };
+
+        const fetchAIResponse = async () => {
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': \`Bearer \${API_KEY}\`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-4o-mini", // Puedes cambiar a gpt-4 si lo deseas
+                        messages: chatHistory,
+                        temperature: 0.7,
+                        max_tokens: 800
+                    })
+                });
+
+                const data = await response.json();
+                removeTyping();
+
+                if (data.error) {
+                    appendMessage('ai', 'Error de conexión: ' + data.error.message);
+                    return;
+                }
+
+                const aiText = data.choices[0].message.content;
+                chatHistory.push({ role: "assistant", content: aiText });
+                appendMessage('ai', aiText);
+
+            } catch (error) {
+                removeTyping();
+                appendMessage('ai', 'Error crítico del sistema. Revisa tu consola.');
+                console.error(error);
+            }
+        };
+
+        const handleSend = async () => {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            // Bloquear input mientras procesa
+            chatInput.value = '';
+            chatInput.disabled = true;
+            btnSend.disabled = true;
+
+            appendMessage('user', text);
+            chatHistory.push({ role: "user", content: text });
+            
+            showTyping();
+            await fetchAIResponse();
+
+            chatInput.disabled = false;
+            btnSend.disabled = false;
+            chatInput.focus();
+        };
+
+        btnSend.addEventListener('click', handleSend);
         chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
+            if (e.key === 'Enter') handleSend();
         });
     </script>
 </body>
