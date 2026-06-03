@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amazing Colors | Elite Ocean Journeys</title>
-    
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/beamazingcolors/amazingcolors/main/HRR.png">
-    
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -18,282 +16,46 @@
             --pearl-bg: #f7f5f0;   
             --gradient: linear-gradient(135deg, #f5841a 0%, #ffb347 100%);
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background-color: var(--primary-dark); color: var(--white); font-family: 'Montserrat', sans-serif; line-height: 1.6; overflow-x: hidden; }
-
-        /* LIENZO DE PARTICULAS MAGNÉTICAS */
-        #particleCanvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: 99999;
-            pointer-events: none; 
-        }
-
-        /* 1. PANTALLA DE INICIO */
-        #welcome-screen {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 50% 45%, #0c4d75 0%, #052c47 55%, #021726 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            z-index: 9998;
-            overflow: hidden;
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.2s ease;
-            touch-action: none; 
-        }
-
-        #welcome-screen.dismissed {
-            transform: translateY(-100vh);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* CAPA DE OLAS FLUIDAS */
-        .ocean-waves {
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%;
-            height: 42vh; 
-            min-height: 220px;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .waves-svg {
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%; height: 100%;
-        }
-
-        .parallax > use {
-            animation: move-forever 22s cubic-bezier(.55,.5,.45,.5) infinite;
-        }
+        #particleCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; pointer-events: none; }
+        #welcome-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 45%, #0c4d75 0%, #052c47 55%, #021726 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; z-index: 9998; overflow: hidden; transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.2s ease; touch-action: none; }
+        #welcome-screen.dismissed { transform: translateY(-100vh); opacity: 0; pointer-events: none; }
+        .ocean-waves { position: absolute; bottom: 0; left: 0; width: 100%; height: 42vh; min-height: 220px; z-index: 1; pointer-events: none; }
+        .waves-svg { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; }
+        .parallax > use { animation: move-forever 22s cubic-bezier(.55,.5,.45,.5) infinite; }
         .parallax > use:nth-child(1) { animation-delay: -2s; animation-duration: 9s; }
         .parallax > use:nth-child(2) { animation-delay: -4s; animation-duration: 13s; }
         .parallax > use:nth-child(3) { animation-delay: -5s; animation-duration: 17s; }
         .parallax > use:nth-child(4) { animation-delay: -7s; animation-duration: 25s; }
-
-        @keyframes move-forever {
-            0% { transform: translate3d(-90px, 0, 0); }
-            100% { transform: translate3d(85px, 0, 0); }
-        }
-
-        .vignette-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.1) 65%, rgba(0, 0, 0, 0.5) 100%);
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .welcome-content {
-            position: relative;
-            z-index: 5;
-            max-width: 950px;
-            padding: 0 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .welcome-content img {
-            width: 260px;
-            max-width: 75vw;
-            margin-bottom: 35px;
-            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5));
-        }
-
-        .welcome-content h1 {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(2.2rem, 7vw, 4rem);
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #ffffff;
-            line-height: 1.2;
-            margin-bottom: 15px;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.6);
-        }
-
-        .welcome-subtitle {
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-            font-weight: 400;
-            color: #c4d1db;
-            letter-spacing: 1px;
-            margin-bottom: 50px;
-            max-width: 700px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-        }
-
-        .welcome-btn {
-            background-color: var(--accent);
-            color: var(--white);
-            border: 1px solid #ff9132;
-            padding: 18px 50px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-radius: 50px;
-            cursor: pointer;
-            position: relative;
-            z-index: 100000;
-            transition: all 0.4s ease;
-            font-family: 'Montserrat', sans-serif;
-            box-shadow: 0 0 25px rgba(12, 181, 214, 0.85);
-        }
-
-        /* 2. INTERFAZ PRINCIPAL */
-        #main-site-wrapper {
-            opacity: 0;
-            background-color: var(--pearl-bg);
-            color: var(--brand-blue);
-            transition: opacity 1s ease 0.5s;
-            min-height: 100vh;
-        }
-        
-        #main-site-wrapper.visible {
-            opacity: 1;
-        }
-
-        .site-brand-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 50px 15px 25px 15px;
-            cursor: pointer;
-            background: var(--pearl-bg);
-            width: 100%; 
-            text-align: center;
-        }
-
-        .site-brand-header span {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(1.5rem, 5.5vw, 2.4rem); 
-            letter-spacing: 6px;
-            margin-right: -6px; 
-            text-transform: uppercase;
-            color: var(--brand-blue);
-            font-weight: 700;
-            display: inline-block;
-            width: 100%;
-            transition: color 0.3s ease;
-        }
-
+        @keyframes move-forever { 0% { transform: translate3d(-90px, 0, 0); } 100% { transform: translate3d(85px, 0, 0); } }
+        .vignette-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.1) 65%, rgba(0, 0, 0, 0.5) 100%); z-index: 2; pointer-events: none; }
+        .welcome-content { position: relative; z-index: 5; max-width: 950px; padding: 0 30px; display: flex; flex-direction: column; align-items: center; }
+        .welcome-content img { width: 260px; max-width: 75vw; margin-bottom: 35px; filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5)); }
+        .welcome-content h1 { font-family: 'Cinzel', serif; font-size: clamp(2.2rem, 7vw, 4rem); font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #ffffff; line-height: 1.2; margin-bottom: 15px; text-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+        .welcome-subtitle { font-size: clamp(0.9rem, 2.5vw, 1.1rem); font-weight: 400; color: #c4d1db; letter-spacing: 1px; margin-bottom: 50px; max-width: 700px; text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+        .welcome-btn { background-color: var(--accent); color: var(--white); border: 1px solid #ff9132; padding: 18px 50px; font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; border-radius: 50px; cursor: pointer; position: relative; z-index: 100000; transition: all 0.4s ease; font-family: 'Montserrat', sans-serif; box-shadow: 0 0 25px rgba(12, 181, 214, 0.85); }
+        #main-site-wrapper { opacity: 0; background-color: var(--pearl-bg); color: var(--brand-blue); transition: opacity 1s ease 0.5s; min-height: 100vh; }
+        #main-site-wrapper.visible { opacity: 1; }
+        .site-brand-header { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 15px 25px 15px; cursor: pointer; background: var(--pearl-bg); width: 100%; text-align: center; }
+        .site-brand-header span { font-family: 'Cinzel', serif; font-size: clamp(1.5rem, 5.5vw, 2.4rem); letter-spacing: 6px; margin-right: -6px; text-transform: uppercase; color: var(--brand-blue); font-weight: 700; display: inline-block; width: 100%; transition: color 0.3s ease; }
         .site-brand-header:hover span { color: #f5841a; }
-
-        .nav-bar { 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-            background: rgba(247, 245, 240, 0.96); 
-            backdrop-filter: blur(10px); 
-            padding: 20px 0; 
-            border-bottom: 1px solid rgba(4, 38, 58, 0.08); 
-            display: flex; 
-            justify-content: center; 
-            gap: 30px; 
-            flex-wrap: wrap;
-        }
-        
-        .nav-btn { 
-            background: none; 
-            border: none; 
-            color: var(--brand-blue); 
-            font-size: 0.85rem; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            cursor: pointer; 
-            opacity: 0.6; 
-            font-weight: 600;
-            padding: 5px 2px;
-            transition: all 0.3s ease;
-        }
-        
+        .nav-bar { position: sticky; top: 0; z-index: 100; background: rgba(247, 245, 240, 0.96); backdrop-filter: blur(10px); padding: 20px 0; border-bottom: 1px solid rgba(4, 38, 58, 0.08); display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+        .nav-btn { background: none; border: none; color: var(--brand-blue); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; opacity: 0.6; font-weight: 600; padding: 5px 2px; transition: all 0.3s ease; }
         .nav-btn.active { opacity: 1; color: #f5841a; border-bottom: 2px solid #f5841a; }
-
         #catalog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 35px; padding: 40px 5%; max-width: 1600px; margin: 0 auto; }
-        
-        .card { 
-            background: #ffffff; 
-            border: 1px solid rgba(4, 38, 58, 0.06); 
-            border-radius: 12px; 
-            overflow: hidden; 
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); 
-            opacity: 0; 
-            transform: translateY(20px); 
-            cursor: pointer; 
-            box-shadow: 0 4px 20px rgba(4, 38, 58, 0.03);
-            display: flex;
-            flex-direction: column;
-        }
-        
+        .card { background: #ffffff; border: 1px solid rgba(4, 38, 58, 0.06); border-radius: 12px; overflow: hidden; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); opacity: 0; transform: translateY(20px); cursor: pointer; box-shadow: 0 4px 20px rgba(4, 38, 58, 0.03); display: flex; flex-direction: column; }
         .card.visible { opacity: 1; transform: translateY(0); }
         .card:hover { border-color: #f5841a; transform: scale(1.02); box-shadow: 0 12px 30px rgba(4, 38, 58, 0.08); }
-        
         .img-container { width: 100%; height: 260px; position: relative; background: var(--brand-blue); overflow: hidden; }
         .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
         .card-info { padding: 30px 25px; flex-grow: 1; display: flex; flex-direction: column; }
-        
-        .card-title { 
-            font-family: 'Cinzel', serif; 
-            font-size: 1.35rem; 
-            color: var(--brand-blue); 
-            font-weight: 700; 
-            line-height: 1.4; 
-            margin-bottom: 12px; 
-        }
-        
-        .card-price { 
-            color: #f5841a; 
-            font-weight: 600; 
-            font-size: 1.1rem; 
-            margin-bottom: 20px; 
-        }
-
-        .card-extra-specs {
-            margin-top: auto;
-            padding-top: 20px;
-            border-top: 1px dashed rgba(4, 38, 58, 0.15);
-            display: flex;
-            flex-direction: column;
-            gap: 10px; 
-        }
-
-        .spec-row {
-            font-size: 0.85rem;
-            color: #4a5e6a;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            line-height: 1.4;
-        }
-
-        .spec-label { 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 0.8px; 
-            color: var(--brand-blue); 
-            opacity: 0.9;
-            flex-shrink: 0;
-            margin-right: 15px;
-        }
-        
-        .spec-value { 
-            text-align: right; 
-            font-weight: 500; 
-            color: #556b79;
-        }
-
-        /* MODAL */
+        .card-title { font-family: 'Cinzel', serif; font-size: 1.35rem; color: var(--brand-blue); font-weight: 700; line-height: 1.4; margin-bottom: 12px; }
+        .card-price { color: #f5841a; font-weight: 600; font-size: 1.1rem; margin-bottom: 20px; }
+        .card-extra-specs { margin-top: auto; padding-top: 20px; border-top: 1px dashed rgba(4, 38, 58, 0.15); display: flex; flex-direction: column; gap: 10px; }
+        .spec-row { font-size: 0.85rem; color: #4a5e6a; display: flex; justify-content: space-between; align-items: flex-start; line-height: 1.4; }
+        .spec-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--brand-blue); opacity: 0.9; flex-shrink: 0; margin-right: 15px; }
+        .spec-value { text-align: right; font-weight: 500; color: #556b79; }
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(4, 38, 58, 0.4); backdrop-filter: blur(15px); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
         .modal-content { background: var(--white); width: 100%; max-width: 1000px; max-height: 90vh; overflow-y: auto; border-radius: 12px; position: relative; }
         .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2.2rem; color: var(--brand-blue); cursor: pointer; z-index: 10; }
@@ -302,17 +64,13 @@
         .modal-details { padding: 40px; color: #333; }
         .modal-title { font-family: 'Cinzel', serif; font-size: 2.2rem; color: var(--brand-blue); font-weight: 700; }
         .btn-wa { display: block; text-align: center; background: var(--gradient); color: var(--white); text-decoration: none; padding: 18px; font-weight: 700; text-transform: uppercase; margin-top: 30px; border-radius: 6px; }
-
         #lightbox-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 3000; cursor: zoom-out; }
         #lightbox-overlay img { max-width: 95%; max-height: 95vh; object-fit: contain; }
-        
         @media (max-width: 800px) { .modal-grid { grid-template-columns: 1fr; } .modal-details { padding: 30px; } .img-container { height: 240px; } .nav-bar { gap: 15px; padding: 15px 10px; } .nav-btn { font-size: 0.78rem; } }
     </style>
 </head>
 <body>
-
     <canvas id="particleCanvas"></canvas>
-
     <div id="welcome-screen">
         <div class="ocean-waves">
             <svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
@@ -335,54 +93,44 @@
             <button class="welcome-btn" onclick="startExperience()">Comencemos la experiencia</button>
         </div>
     </div>
-
     <div id="main-site-wrapper">
         <div class="site-brand-header" onclick="backToWelcome()">
             <span>Amazing Colors</span>
         </div>
-
         <nav class="nav-bar">
             <button id="btnTour" class="nav-btn active" onclick="filter('tour')">Momentos inolvidables</button>
             <button id="btnYate" class="nav-btn" onclick="filter('yate')">Nuestra Flota</button>
             <button id="btnTransportacion" class="nav-btn" onclick="filter('transportacion')">Transportación</button>
         </nav>
-
         <main id="catalog-grid"></main>
     </div>
-
     <div id="modal-overlay" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span class="modal-close" onclick="closeModal()">&times;</span>
             <div id="modal-body" class="modal-grid"></div>
         </div>
     </div>
-
     <div id="lightbox-overlay" onclick="closeLightbox()">
         <img id="lightbox-img" src="" alt="Vista Completa">
     </div>
-
     <script>
         const TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9f5_81pPWsXVaJ5uKaifOyjpmSprGKAzEkGh7qMSd5R83cV8UCJeqldoZIb5l3sN8kDEbFoC2NY0s/pub?output=tsv';
         const GITHUB_RAW = 'https://raw.githubusercontent.com/beamazingcolors/amazingcolors/main/';
-
         let fullData = [];
 
         function startExperience() {
             document.getElementById('welcome-screen').classList.add('dismissed');
             document.getElementById('main-site-wrapper').classList.add('visible');
         }
-
         function backToWelcome() {
             document.getElementById('welcome-screen').classList.remove('dismissed');
             document.getElementById('main-site-wrapper').classList.remove('visible');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        /* MOTOR DE PARTÍCULAS */
         const canvas = document.getElementById('particleCanvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -402,14 +150,12 @@
                 this.alpha = 1;                                              
                 this.decay = Math.random() * 0.012 + 0.012;  
             }
-
             update() {
                 this.x += this.vx;
                 this.vy += this.gravity;                     
                 this.y += this.vy;
                 this.alpha -= this.decay;
             }
-
             draw() {
                 if (this.alpha <= 0) return;
                 ctx.save();
@@ -426,7 +172,6 @@
         window.addEventListener('mousemove', (e) => {
             for (let i = 0; i < 2; i++) { particles.push(new SparkParticle(e.clientX, e.clientY)); }
         });
-
         window.addEventListener('touchmove', (e) => {
             const touch = e.touches[0];
             for (let i = 0; i < 2; i++) { particles.push(new SparkParticle(touch.clientX, touch.clientY)); }
@@ -443,7 +188,6 @@
         }
         animateParticles();
 
-        /* PARSEO DE DATOS INTELIGENTE */
         function getCleanValue(item, possibleHeaders) {
             if (!item) return '';
             for (let originalKey in item) {
@@ -453,10 +197,8 @@
                     if (normalizedKey === normalizedHeader) {
                         let val = item[originalKey]?.trim();
                         if (!val || val.toLowerCase() === 'undefined' || val.toLowerCase() === 'null') return '';
-                        
                         if (val.startsWith('::')) val = val.substring(2).trim();
                         else if (val.startsWith(':')) val = val.substring(1).trim();
-                        
                         return val;
                     }
                 }
@@ -468,7 +210,6 @@
             if (!codigoValue || codigoValue === '') return '';
             let fileName = codigoValue.trim();
             let lower = fileName.toLowerCase();
-            
             if (!lower.endsWith('.jpg') && !lower.endsWith('.jpeg') && !lower.endsWith('.png')) {
                 if (lower.startsWith('tr') || lower.startsWith('mr')) {
                     fileName += '.png';
@@ -484,6 +225,7 @@
                 const response = await fetch(TSV_URL);
                 const text = await response.text();
                 const rows = text.replace(/\r/g, '').split('\n').filter(r => r.trim() !== '').map(r => r.split('\t'));
+                if(rows.length === 0 || !rows[0]) return;
                 const headers = rows[0].map(h => h.trim());
                 fullData = rows.slice(1).map(row => {
                     let item = {}; headers.forEach((h, i) => { item[h] = row[i]?.trim(); }); return item;
@@ -499,56 +241,34 @@
                 else if (category === 'yate') btn.classList.toggle('active', textNorm.includes('flota'));
                 else if (category === 'transportacion') btn.classList.toggle('active', textNorm.includes('trans'));
             });
-
-            const grid = document.getElementById('catalog-grid'); grid.innerHTML = '';
-            
+            const grid = document.getElementById('catalog-grid'); if(!grid) return; grid.innerHTML = '';
             const filtered = fullData.filter(item => {
                 let tipoSheet = getCleanValue(item, ['TIPO', 'Tipo']).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 let catTarget = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                
-                // AJUSTE SEGURO: Si filtra por yate, acepta variaciones escritas en el Sheet
                 if (catTarget === 'yate') {
                     return tipoSheet.includes('yate') || tipoSheet.includes('flota') || tipoSheet.includes('flotilla');
                 }
-                
                 return tipoSheet.includes(catTarget);
             });
-            
             filtered.forEach((item, idx) => {
                 const card = document.createElement('div'); card.className = 'card';
                 let nombre = getCleanValue(item, ['Nombre', 'NOMBRE']);
                 card.onclick = () => openModal(nombre);
-                
                 let codigo = getCleanValue(item, ['Codigo', 'Código', 'CDG']);
                 let imgUrl = getImgUrlByCodigo(codigo);
-                
                 let precio = getCleanValue(item, ['Precio', 'PRECIO']);
-                if (precio === '' || precio.toLowerCase() === 'consultar') {
-                    precio = 'Momentos inolvidables';
-                }
-
+                if (precio === '' || precio.toLowerCase() === 'consultar') { precio = 'Momentos inolvidables'; }
                 let extraSpecsHtml = '';
-                const excludedHeaders = ['nombre', 'codigo', 'codigo', 'tipo', 'precio', 'descriptivo', 'detalles', 'incluye:'];
-                
+                const excludedHeaders = ['nombre', 'codigo', 'tipo', 'precio', 'descriptivo', 'detalles', 'incluye:'];
                 for (let originalKey in item) {
                     let keyNormalized = originalKey.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
                     let val = getCleanValue(item, [originalKey]); 
-                    
                     if (val && val !== '' && !excludedHeaders.includes(keyNormalized)) {
                         let cleanLabel = originalKey.trim();
-                        if (cleanLabel.endsWith(':')) {
-                            cleanLabel = cleanLabel.slice(0, -1).trim();
-                        }
-
-                        extraSpecsHtml += `
-                            <div class="spec-row">
-                                <span class="spec-label">${cleanLabel}:</span>
-                                <span class="spec-value">${val}</span>
-                            </div>
-                        `;
+                        if (cleanLabel.endsWith(':')) { cleanLabel = cleanLabel.slice(0, -1).trim(); }
+                        extraSpecsHtml += `<div class="spec-row"><span class="spec-label">${cleanLabel}:</span><span class="spec-value">${val}</span></div>`;
                     }
                 }
-
                 card.innerHTML = `
                     <div class="img-container">
                         ${imgUrl ? `<img src="${imgUrl}" onerror="if(!this.dataset.retry){this.dataset.retry=true; this.src=this.src.toLowerCase().includes('.jpg')?this.src.replace(/\.jpg/i,'.png'):this.src.replace(/\.png/i,'.jpg');}else{this.style.opacity='0';}">` : ''}
@@ -564,33 +284,24 @@
         }
 
         function openModal(nombreBusqueda) {
-            const item = fullData.find(i => getCleanValue(i, ['Nombre', 'NOMBRE']) === nombreBusqueda);
+            const item = fullData.find(i => getCleanValue(i, ['Nombre', 'NOMBRE']) === nombreBusqueda); if(!item) return;
             const body = document.getElementById('modal-body');
             let nombre = getCleanValue(item, ['Nombre', 'NOMBRE']);
-            
             let precio = getCleanValue(item, ['Precio', 'PRECIO']);
-            if (precio === '' || precio.toLowerCase() === 'consultar') {
-                precio = 'Momentos inolvidables';
-            }
-            
+            if (precio === '' || precio.toLowerCase() === 'consultar') { precio = 'Momentos inolvidables'; }
             let desc = getCleanValue(item, ['Descriptivo', 'Detalles']) || 'Ficha técnica premium disponible.';
             let codigo = getCleanValue(item, ['Codigo', 'Código', 'CDG']);
             let imgUrl = getImgUrlByCodigo(codigo);
-            
             let fullSpecsModal = '';
             for (let originalKey in item) {
                 let keyNorm = originalKey.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
                 let val = getCleanValue(item, [originalKey]); 
-                if (val && val !== '' && !['nombre', 'codigo', 'codigo', 'tipo', 'precio', 'descriptivo', 'detalles'].includes(keyNorm)) {
+                if (val && val !== '' && !['nombre', 'codigo', 'tipo', 'precio', 'descriptivo', 'detalles'].includes(keyNorm)) {
                     let cleanLabelModal = originalKey.trim();
-                    if (cleanLabelModal.endsWith(':')) {
-                        cleanLabelModal = cleanLabelModal.slice(0, -1).trim();
-                    }
-
+                    if (cleanLabelModal.endsWith(':')) { cleanLabelModal = cleanLabelModal.slice(0, -1).trim(); }
                     fullSpecsModal += `<p style="font-size:0.85rem; color:#556b79; margin-top:8px;"><strong>${cleanLabelModal}:</strong> ${val}</p>`;
                 }
             }
-            
             body.innerHTML = `
                 <div class="modal-gallery">
                     ${imgUrl ? `<img src="${imgUrl}" onclick="openLightbox('${imgUrl}')" onerror="if(!this.dataset.retry){this.dataset.retry=true; this.src=this.src.toLowerCase().includes('.jpg')?this.src.replace(/\.jpg/i,'.png'):this.src.replace(/\.png/i,'.jpg');}else{this.style.opacity='0';}" style="width:100%; height:100%; object-fit:cover; display:block;">` : ''}
