@@ -291,7 +291,6 @@
             text-align: right; 
             font-weight: 500; 
             color: #556b79;
-            white-space: pre-line; /* Clave: renderiza los saltos de línea internos de tu celda de bebidas */
         }
 
         /* MODAL */
@@ -363,7 +362,6 @@
     </div>
 
     <script>
-        // ENLACE DE BASE DE DATOS ORIGINAL RESTABLECIDO Y AJUSTADO
         const TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9f5_81pPWsXVaJ5uKaifOyjpmSprGKAzEkGh7qMSd5R83cV8UCJeqldoZIb5l3sN8kDEbFoC2NY0s/pub?output=tsv';
         const GITHUB_RAW = 'https://raw.githubusercontent.com/beamazingcolors/amazingcolors/main/';
 
@@ -399,9 +397,9 @@
                 this.radius = Math.random() * 2 + 1.2;       
                 this.vx = (Math.random() - 0.5) * 3.5;       
                 this.vy = (Math.random() - 0.5) * 3.5 - 1.5; 
-                this.gravity = 0.14;                         
+                this.gravity = 0.14;                                         
                 this.hue = Math.floor(Math.random() * 360);  
-                this.alpha = 1;                              
+                this.alpha = 1;                                              
                 this.decay = Math.random() * 0.012 + 0.012;  
             }
 
@@ -445,46 +443,7 @@
         }
         animateParticles();
 
-        /* PARSER REESTRUCTURADO INFALIBLE CONTRA SALTOS DE LINEA INTERNOS */
-        function splitTSVCells(rowText) {
-            return rowText.split('\t').map(cell => {
-                let val = cell.trim();
-                // Si la celda viene empaquetada en comillas por culpa de los saltos de línea de Excel/Google, las remueve limpiamente
-                if (val.startsWith('"') && val.endsWith('"')) {
-                    val = val.slice(1, -1).trim();
-                    val = val.replace(/""/g, '"');
-                }
-                return val;
-            });
-        }
-
-        function parseTSV(text) {
-            const rawLines = text.replace(/\r/g, '').split('\n');
-            const processedRows = [];
-            let currentLine = '';
-            
-            for (let i = 0; i < rawLines.length; i++) {
-                if (currentLine === '') {
-                    currentLine = rawLines[i];
-                } else {
-                    currentLine += '\n' + rawLines[i];
-                }
-                
-                // Cuenta el número de comillas en la acumulación de líneas actuales
-                const quoteCount = (currentLine.match(/"/g) || []).length;
-                
-                // Si el número de comillas es par, significa que no hay bloques de texto abiertos y la fila terminó
-                if (quoteCount % 2 === 0) {
-                    processedRows.push(splitTSVCells(currentLine));
-                    currentLine = '';
-                }
-            }
-            if (currentLine !== '') {
-                processedRows.push(splitTSVCells(currentLine));
-            }
-            return processedRows;
-        }
-
+        /* PARSEO DE DATOS INTELIGENTE */
         function getCleanValue(item, possibleHeaders) {
             if (!item) return '';
             for (let originalKey in item) {
@@ -505,32 +464,30 @@
             return '';
         }
 
+        /* CORRECCIÓN EXCLUSIVA DE IMÁGENES: Usa encodeURI para permitir subcarpetas y soporta .webp */
         function getImgUrlByCodigo(codigoValue) {
             if (!codigoValue || codigoValue === '') return '';
             let fileName = codigoValue.trim();
             let lower = fileName.toLowerCase();
             
-            if (!lower.endsWith('.jpg') && !lower.endsWith('.jpeg') && !lower.endsWith('.png')) {
+            if (!lower.endsWith('.jpg') && !lower.endsWith('.jpeg') && !lower.endsWith('.png') && !lower.endsWith('.webp')) {
                 if (lower.startsWith('tr') || lower.startsWith('mr')) {
                     fileName += '.png';
                 } else {
                     fileName += '.jpg';
                 }
             }
-            return GITHUB_RAW + encodeURIComponent(fileName);
+            return GITHUB_RAW + encodeURI(fileName);
         }
 
         async function init() {
             try {
                 const response = await fetch(TSV_URL);
                 const text = await response.text();
-                
-                // Filtrado e inyección inmune a las deformaciones por saltos de línea
-                const rows = parseTSV(text).filter(r => r.length > 0 && r.some(cell => cell !== ''));
-                
+                const rows = text.replace(/\r/g, '').split('\n').filter(r => r.trim() !== '').map(r => r.split('\t'));
                 const headers = rows[0].map(h => h.trim());
                 fullData = rows.slice(1).map(row => {
-                    let item = {}; headers.forEach((h, i) => { item[h] = row[i] || ''; }); return item;
+                    let item = {}; headers.forEach((h, i) => { item[h] = row[i]?.trim(); }); return item;
                 });
                 filter('tour');
             } catch (err) { console.error(err); }
@@ -548,6 +505,18 @@
             
             const filtered = fullData.filter(item => {
                 let tipoSheet = getCleanValue(item, ['TIPO', 'Tipo']).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                
+                // Mapeo flexible para evitar fallos si escribes "Flota", "Flotilla" o "Yate"
+                if (category === 'yate') {
+                    return tipoSheet.includes('yate') || tipoSheet.includes('flota') || tipoSheet.includes('flotilla');
+                }
+                if (category === 'tour') {
+                    return tipoSheet.includes('tour') || tipoSheet.includes('momento') || tipoSheet.includes('experiencia');
+                }
+                if (category === 'transportacion') {
+                    return tipoSheet.includes('trans');
+                }
+                
                 let catTarget = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 return tipoSheet.includes(catTarget);
             });
@@ -566,7 +535,7 @@
                 }
 
                 let extraSpecsHtml = '';
-                const excludedHeaders = ['nombre', 'codigo', 'codigo', 'tipo', 'precio', 'descriptivo', 'detalles', 'incluye', 'incluye:'];
+                const excludedHeaders = ['nombre', 'codigo', 'codigo', 'tipo', 'precio', 'descriptivo', 'detalles', 'incluye:'];
                 
                 for (let originalKey in item) {
                     let keyNormalized = originalKey.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
@@ -574,7 +543,9 @@
                     
                     if (val && val !== '' && !excludedHeaders.includes(keyNormalized)) {
                         let cleanLabel = originalKey.trim();
-                        if (cleanLabel.endsWith(':')) { cleanLabel = cleanLabel.slice(0, -1).trim(); }
+                        if (cleanLabel.endsWith(':')) {
+                            cleanLabel = cleanLabel.slice(0, -1).trim();
+                        }
 
                         extraSpecsHtml += `
                             <div class="spec-row">
@@ -619,7 +590,9 @@
                 let val = getCleanValue(item, [originalKey]); 
                 if (val && val !== '' && !['nombre', 'codigo', 'codigo', 'tipo', 'precio', 'descriptivo', 'detalles'].includes(keyNorm)) {
                     let cleanLabelModal = originalKey.trim();
-                    if (cleanLabelModal.endsWith(':')) { cleanLabelModal = cleanLabelModal.slice(0, -1).trim(); }
+                    if (cleanLabelModal.endsWith(':')) {
+                        cleanLabelModal = cleanLabelModal.slice(0, -1).trim();
+                    }
 
                     fullSpecsModal += `<p style="font-size:0.85rem; color:#556b79; margin-top:8px;"><strong>${cleanLabelModal}:</strong> ${val}</p>`;
                 }
@@ -633,7 +606,7 @@
                     <h1 class="modal-title">${nombre}</h1>
                     <p class="card-price" style="font-size:1.6rem; margin-bottom:15px;">${precio}</p>
                     <p style="font-size:0.95rem; color:#333; margin-top:15px; font-weight:500; line-height:1.5;">${desc}</p>
-                    ${fullSpecsModal ? `<div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.08); display:flex; flex-direction:column; gap:6px; white-space:pre-line;">${fullSpecsModal}</div>` : ''}
+                    ${fullSpecsModal ? `<div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.08); display:flex; flex-direction:column; gap:6px;">${fullSpecsModal}</div>` : ''}
                     <a href="https://wa.me/message/XIVP7QDJ5QKIP1" target="_blank" class="btn-wa">Reservar ahora</a>
                 </div>
             `;
