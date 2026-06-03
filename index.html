@@ -464,20 +464,19 @@
             return '';
         }
 
-        /* CORRECCIÓN EXCLUSIVA DE IMÁGENES: Usa encodeURI para permitir subcarpetas y soporta .webp */
         function getImgUrlByCodigo(codigoValue) {
             if (!codigoValue || codigoValue === '') return '';
             let fileName = codigoValue.trim();
             let lower = fileName.toLowerCase();
             
-            if (!lower.endsWith('.jpg') && !lower.endsWith('.jpeg') && !lower.endsWith('.png') && !lower.endsWith('.webp')) {
+            if (!lower.endsWith('.jpg') && !lower.endsWith('.jpeg') && !lower.endsWith('.png')) {
                 if (lower.startsWith('tr') || lower.startsWith('mr')) {
                     fileName += '.png';
                 } else {
                     fileName += '.jpg';
                 }
             }
-            return GITHUB_RAW + encodeURI(fileName);
+            return GITHUB_RAW + encodeURIComponent(fileName);
         }
 
         async function init() {
@@ -505,19 +504,13 @@
             
             const filtered = fullData.filter(item => {
                 let tipoSheet = getCleanValue(item, ['TIPO', 'Tipo']).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                let catTarget = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 
-                // Mapeo flexible para evitar fallos si escribes "Flota", "Flotilla" o "Yate"
-                if (category === 'yate') {
+                // AJUSTE SEGURO: Si filtra por yate, acepta variaciones escritas en el Sheet
+                if (catTarget === 'yate') {
                     return tipoSheet.includes('yate') || tipoSheet.includes('flota') || tipoSheet.includes('flotilla');
                 }
-                if (category === 'tour') {
-                    return tipoSheet.includes('tour') || tipoSheet.includes('momento') || tipoSheet.includes('experiencia');
-                }
-                if (category === 'transportacion') {
-                    return tipoSheet.includes('trans');
-                }
                 
-                let catTarget = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 return tipoSheet.includes(catTarget);
             });
             
