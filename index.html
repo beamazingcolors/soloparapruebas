@@ -50,22 +50,19 @@
         ::-webkit-scrollbar-track { background: #0A111E; }
         ::-webkit-scrollbar-thumb { background: #E06A41; }
 
-        /* SPA ROUTING TRANSITIONS - CROSSFADE (CERO SALTOS) */
+        /* SPA ROUTING TRANSITIONS - SOLUCIÓN A ESPACIOS VACÍOS FANTASMAS */
         .page-view {
-            position: absolute;
-            top: 0; left: 0; width: 100%;
-            visibility: hidden;
+            display: none; /* Elimina la página inactiva del cálculo de altura, matando los espacios vacíos */
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
-            z-index: 0;
         }
         .page-view.active {
-            position: relative;
-            visibility: visible;
-            opacity: 1;
-            transform: translateY(0);
-            z-index: 10;
+            display: block; /* Devuelve el bloque al flujo normal con su altura real */
+            animation: fadeUpPage 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeUpPage {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         /* REVEAL ANIMATIONS */
@@ -610,7 +607,7 @@
             openWhatsApp(`Hola Concierge, soy ${name}. Me interesa planear una experiencia privada para ${people}. Nos gustaría visitar: ${destinos}.`);
         }
 
-        // SPA ROUTER LOGIC - MOTOR FLUIDO
+        // SPA ROUTER LOGIC - MOTOR FLUIDO Y ESTRICTO (CORRIGE VACÍOS Y SALTOS)
         function navigateTo(pageId) {
             trackConversion('Page_View', { page: pageId });
             
@@ -619,15 +616,21 @@
             
             if(currentActive === targetPage) return;
 
-            // Scroll arriba suave al cambiar pestaña
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Actualizar la URL con el hashtag (permite compartir links como misitio.com/#tours)
+            if(history.pushState) {
+                history.pushState(null, null, `#${pageId}`);
+            } else {
+                location.hash = `#${pageId}`;
+            }
 
-            // Activar Crossfade eliminando clase active de la actual
+            // Scroll arriba instantáneo para evitar quedar atascado en el fondo de la pantalla
+            window.scrollTo({ top: 0, behavior: 'instant' });
+
+            // Cambiar clases (El CSS 'display: none' se encarga de eliminar el espacio residual al instante)
             if(currentActive) {
                 currentActive.classList.remove('active');
             }
             
-            // Mostrar la nueva de inmediato (CSS se encarga de que ocupen el mismo lugar y se fundan)
             if(targetPage) {
                 targetPage.classList.add('active');
                 
@@ -635,7 +638,7 @@
                 targetPage.querySelectorAll('.reveal-up, .reveal-curtain').forEach(el => {
                     el.classList.remove('active');
                 });
-                setTimeout(() => setupReveals(), 100);
+                setTimeout(() => setupReveals(), 50);
 
                 // Ajustar Navbar visual según la página
                 adjustNavbar(pageId);
@@ -694,12 +697,14 @@
 
         // INICIALIZACIÓN AL CARGAR
         document.addEventListener('DOMContentLoaded', () => {
-            // Asegurar que la primera página inicie correctamente
-            setTimeout(() => {
-                setupReveals();
-                const homeView = document.getElementById('page-home');
-                homeView.querySelectorAll('.reveal-up').forEach(el => el.classList.add('active'));
-            }, 100);
+            // Leer si la URL viene con un ancla (ej. /#tours) para cargar esa página directo y evitar que inicie vacía
+            const hash = window.location.hash.replace('#', '');
+            const validPages = ['home', 'legacy', 'tours', 'insider', 'contact'];
+            const initialPage = validPages.includes(hash) ? hash : 'home';
+            
+            // Iniciar de forma limpia en la página solicitada
+            document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
+            navigateTo(initialPage);
         });
     </script>
 </body>
