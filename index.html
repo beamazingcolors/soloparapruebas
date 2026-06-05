@@ -50,17 +50,22 @@
         ::-webkit-scrollbar-track { background: #0A111E; }
         ::-webkit-scrollbar-thumb { background: #E06A41; }
 
-        /* SPA ROUTING TRANSITIONS */
+        /* SPA ROUTING TRANSITIONS - CROSSFADE (CERO SALTOS) */
         .page-view {
-            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            visibility: hidden;
             opacity: 0;
             transform: translateY(20px);
-            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
+            z-index: 0;
         }
         .page-view.active {
-            display: block;
+            position: relative;
+            visibility: visible;
             opacity: 1;
             transform: translateY(0);
+            z-index: 10;
         }
 
         /* REVEAL ANIMATIONS */
@@ -141,7 +146,7 @@
     </nav>
 
     <!-- MAIN SPA CONTAINER -->
-    <main class="min-h-screen">
+    <main class="min-h-screen relative">
 
         <!-- ========================================== -->
         <!-- VIEW 1: HOME (PARALLAX PROFUNDO)           -->
@@ -253,7 +258,7 @@
             </div>
 
             <!-- CARRUSEL AUTOMÁTICO DE ACTIVIDADES -->
-            <div class="relative w-full pb-20 pt-10 bg-brand-navy overflow-hidden carousel-hover-pause border-b border-white/5">
+            <div class="relative w-full pb-10 pt-10 bg-brand-navy overflow-hidden carousel-hover-pause border-b border-white/5">
                 <!-- Degradados laterales para efecto de aparición/desaparición suave -->
                 <div class="absolute inset-y-0 left-0 w-16 md:w-40 bg-gradient-to-r from-brand-navy to-transparent z-10 pointer-events-none"></div>
                 <div class="absolute inset-y-0 right-0 w-16 md:w-40 bg-gradient-to-l from-brand-navy to-transparent z-10 pointer-events-none"></div>
@@ -605,43 +610,38 @@
             openWhatsApp(`Hola Concierge, soy ${name}. Me interesa planear una experiencia privada para ${people}. Nos gustaría visitar: ${destinos}.`);
         }
 
-        // SPA ROUTER LOGIC
+        // SPA ROUTER LOGIC - MOTOR FLUIDO
         function navigateTo(pageId) {
             trackConversion('Page_View', { page: pageId });
             
-            // 1. Ocultar todas las páginas
-            const pages = document.querySelectorAll('.page-view');
-            pages.forEach(page => {
-                page.classList.remove('active');
-                setTimeout(() => {
-                    if(!page.classList.contains('active')) {
-                        page.style.display = 'none';
-                    }
-                }, 600); // Tiempo de la transición CSS
-            });
+            const currentActive = document.querySelector('.page-view.active');
+            const targetPage = document.getElementById(`page-${pageId}`);
+            
+            if(currentActive === targetPage) return;
 
-            // 2. Mostrar la página objetivo
-            setTimeout(() => {
-                const targetPage = document.getElementById(`page-${pageId}`);
-                targetPage.style.display = 'block';
-                // Pequeño delay para asegurar que el display:block se aplique antes del fade in
-                setTimeout(() => {
-                    targetPage.classList.add('active');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    
-                    // Resetear y re-trigger animaciones (Reveals) en la nueva vista
-                    targetPage.querySelectorAll('.reveal-up, .reveal-curtain').forEach(el => {
-                        el.classList.remove('active');
-                    });
-                    setTimeout(() => setupReveals(), 100);
+            // Scroll arriba suave al cambiar pestaña
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
-                    // Ajustar Navbar visual según la página
-                    adjustNavbar(pageId);
+            // Activar Crossfade eliminando clase active de la actual
+            if(currentActive) {
+                currentActive.classList.remove('active');
+            }
+            
+            // Mostrar la nueva de inmediato (CSS se encarga de que ocupen el mismo lugar y se fundan)
+            if(targetPage) {
+                targetPage.classList.add('active');
+                
+                // Resetear y re-trigger animaciones (Reveals) en la nueva vista
+                targetPage.querySelectorAll('.reveal-up, .reveal-curtain').forEach(el => {
+                    el.classList.remove('active');
+                });
+                setTimeout(() => setupReveals(), 100);
 
-                }, 50);
-            }, 600);
+                // Ajustar Navbar visual según la página
+                adjustNavbar(pageId);
+            }
 
-            // 3. Actualizar estado activo en el menú
+            // Actualizar estado activo en el menú
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('text-brand-cyan');
                 link.classList.add('text-white');
