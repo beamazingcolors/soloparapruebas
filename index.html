@@ -1,375 +1,700 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinguaAI - Tutor de Idiomas Premium</title>
+    <title>Amazing Colors Private Tours | Exclusividad en el Caribe</title>
+    <meta name="description" content="Tours privados en Cancún y la Riviera Maya. Experiencias de lujo diseñadas a medida.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@200;300;400;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        // DataLayer y Meta Pixel simulados para CRO
+        window.dataLayer = window.dataLayer || [];
+        function trackConversion(eventName, details) {
+            console.log(`[Analytics Event] ${eventName}`, details);
+            window.dataLayer.push({ event: eventName, ...details });
+        }
+    </script>
+
     <script>
         tailwind.config = {
             theme: {
-                extend: { colors: { neutral: { 950: '#0a0a0a' } } }
+                extend: {
+                    colors: {
+                        brand: {
+                            cyan: '#00B4D8',
+                            orange: '#FF7A00',
+                            navy: '#06142E', // Navy aún más profundo/editorial
+                            white: '#FFFFFF',
+                            sand: '#F5F5F0' // Tono arena sutil para fondos de lujo
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'], // Agregado para acentos de lujo
+                    },
+                    aspectRatio: {
+                        'portrait': '3 / 4',
+                        'tall': '9 / 16'
+                    }
+                }
             }
         }
     </script>
+
     <style>
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-zoom-in { animation: zoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-        .view-hidden { display: none !important; }
+        /* Animaciones de entrada al hacer scroll (Reveal) */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
         
-        .ai-message-content strong { color: #60a5fa; }
-        .ai-message-content ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+        .reveal-fade {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .reveal-fade.active {
+            opacity: 1;
+        }
+
+        /* Scrollbar elegante */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #06142E; }
+        ::-webkit-scrollbar-thumb { background: #00B4D8; }
+
+        /* Efectos de imagen de lujo */
+        .img-zoom-hover { overflow: hidden; }
+        .img-zoom-hover img { transition: transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .img-zoom-hover:hover img { transform: scale(1.05); }
+
+        .text-outline {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+            color: transparent;
+        }
     </style>
 </head>
-<body class="bg-neutral-950 text-neutral-100 font-sans selection:bg-blue-500/30 overflow-x-hidden">
+<body class="font-sans bg-brand-sand text-slate-800 antialiased overflow-x-hidden selection:bg-brand-cyan selection:text-white">
 
-    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-neutral-950/80 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2 cursor-pointer" onclick="switchView('hero')">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-violet-600 flex items-center justify-center">
-                    <i data-lucide="bot" class="text-white w-5 h-5"></i>
-                </div>
-                <span class="font-semibold tracking-wide text-lg hidden md:block">Lingua<span class="text-blue-500">AI</span></span>
-            </div>
-            <div class="flex gap-4 md:gap-8 text-sm font-medium text-neutral-400">
-                <button onclick="switchView('dashboard')" class="hover:text-white transition-colors flex items-center gap-2"><i data-lucide="layout-dashboard" class="w-4 h-4"></i><span class="hidden md:inline">Dashboard</span></button>
-                <button onclick="switchView('roleplays')" class="hover:text-white transition-colors flex items-center gap-2"><i data-lucide="crosshair" class="w-4 h-4"></i><span class="hidden md:inline">Roleplays</span></button>
-                <button onclick="switchView('chat')" class="hover:text-white transition-colors flex items-center gap-2"><i data-lucide="message-square" class="w-4 h-4"></i><span class="hidden md:inline">Tutor IA</span></button>
-            </div>
-            <button class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-neutral-400 text-xs font-medium cursor-default">
-                Modo Demo
-            </button>
-        </div>
-    </nav>
+    <!-- Barra lateral de Redes Sociales (Desktop) -->
+    <div class="fixed left-6 top-1/2 transform -translate-y-1/2 z-40 hidden lg:flex flex-col gap-6 items-center">
+        <a href="#" class="text-white/50 hover:text-brand-orange transition-colors hover:-translate-y-1 duration-300" title="Instagram">
+            <i class="fab fa-instagram text-xl"></i>
+        </a>
+        <a href="#" class="text-white/50 hover:text-brand-orange transition-colors hover:-translate-y-1 duration-300" title="Facebook">
+            <i class="fab fa-facebook-f text-xl"></i>
+        </a>
+        <a href="#" onclick="openWhatsApp('Hola, quisiera más información sobre sus tours')" class="text-white/50 hover:text-brand-orange transition-colors hover:-translate-y-1 duration-300" title="WhatsApp">
+            <i class="fab fa-whatsapp text-xl"></i>
+        </a>
+        <div class="w-[1px] h-16 bg-gradient-to-b from-white/30 to-transparent mt-2"></div>
+    </div>
 
-    <main class="pt-24 pb-12 px-6 max-w-6xl mx-auto min-h-screen">
-        
-        <div id="view-hero" class="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-8 animate-fade-in w-full">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-4">
-                <i data-lucide="zap" class="w-4 h-4"></i>
-                <span>Tutor de Élite Activado</span>
-            </div>
-            <h1 class="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-500 pb-2">
-                Fluidez real. <br /> Sin excusas.
-            </h1>
-            <p class="text-lg md:text-xl text-neutral-400 max-w-2xl leading-relaxed">
-                Inglés, Portugués, Italiano y Francés. Desde cero hasta negociaciones corporativas con inmersión adaptativa.
-            </p>
-            <div class="flex flex-wrap gap-4 justify-center mt-8">
-                <button onclick="switchView('chat'); triggerInitialDiagnosis();" class="px-8 py-4 rounded-full bg-white text-black font-semibold text-lg hover:scale-105 transition-transform flex items-center gap-2">
-                    Diagnóstico Inicial <i data-lucide="play" class="w-5 h-5 fill-current"></i>
-                </button>
-                <button onclick="switchView('dashboard')" class="px-8 py-4 rounded-full glass border border-white/10 hover:bg-white/10 text-white font-semibold text-lg hover:scale-105 transition-transform flex items-center gap-2">
-                    Ver Infraestructura
-                </button>
-            </div>
-        </div>
-
-        <div id="view-dashboard" class="animate-fade-in w-full hidden flex-col">
-            <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 class="text-3xl font-bold">Rutas de Aprendizaje</h2>
-                    <p class="text-neutral-400">Infraestructura completa A1 - C2</p>
+    <nav id="main-nav" class="fixed w-full z-50 transition-all duration-500 bg-transparent py-6">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 z-50">
+                    <a href="#home" class="font-display font-black text-2xl tracking-tighter text-white transition-colors duration-300">
+                        AMAZING<span class="text-brand-cyan">COLORS</span>
+                    </a>
                 </div>
-                <div class="flex gap-2 bg-neutral-900 p-1 rounded-lg border border-white/10">
-                    <button onclick="loadCurriculum('EN')" class="lang-btn active-lang px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white transition-all" data-lang="EN">Inglés</button>
-                    <button onclick="loadCurriculum('PT')" class="lang-btn px-4 py-2 rounded-md text-sm font-medium text-neutral-400 hover:text-white transition-all" data-lang="PT">Portugués</button>
-                    <button onclick="loadCurriculum('IT')" class="lang-btn px-4 py-2 rounded-md text-sm font-medium text-neutral-400 hover:text-white transition-all" data-lang="IT">Italiano</button>
-                    <button onclick="loadCurriculum('FR')" class="lang-btn px-4 py-2 rounded-md text-sm font-medium text-neutral-400 hover:text-white transition-all" data-lang="FR">Francés</button>
-                </div>
-            </div>
-            
-            <div id="curriculum-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                </div>
-        </div>
-
-        <div id="view-roleplays" class="animate-fade-in w-full hidden flex-col">
-            <h2 class="text-3xl font-bold mb-2">Simuladores de Alto Rendimiento</h2>
-            <p class="text-neutral-400 mb-8">Escenarios reales para practicar vocabulario técnico y negociación.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="glass p-6 rounded-2xl border border-white/10 hover:border-blue-500/50 transition-all group cursor-pointer" onclick="startRoleplay('Venta Inmobiliaria Lujo')">
-                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-4">
-                        <i data-lucide="building" class="text-blue-400 w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Venta Inmobiliaria Premium</h3>
-                    <p class="text-neutral-400 text-sm mb-4">Presentación de Nautica Residences para inversores extranjeros.</p>
-                    <span class="text-blue-400 text-sm font-medium flex items-center gap-1 group-hover:translate-x-1 transition-transform">Iniciar Simulación <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex space-x-10 items-center">
+                    <a href="#home" class="nav-link text-white/80 hover:text-white text-sm tracking-widest uppercase font-medium transition-colors">Legado</a>
+                    <a href="#tours" class="nav-link text-white/80 hover:text-white text-sm tracking-widest uppercase font-medium transition-colors">Tours</a>
+                    <a href="#guides" class="nav-link text-white/80 hover:text-white text-sm tracking-widest uppercase font-medium transition-colors">Insider</a>
+                    <button onclick="openContactModal()" class="bg-brand-orange text-white px-8 py-3 rounded-none font-sans font-semibold tracking-wide hover:bg-white hover:text-brand-orange transition-all duration-300 CRO-tracking-btn" data-cro="Nav_Contact_Btn">
+                        RESERVAR
+                    </button>
                 </div>
 
-                <div class="glass p-6 rounded-2xl border border-white/10 hover:border-emerald-500/50 transition-all group cursor-pointer" onclick="startRoleplay('Cierre Financiero')">
-                    <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-4">
-                        <i data-lucide="badge-dollar-sign" class="text-emerald-400 w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Negociación de Pagos</h3>
-                    <p class="text-neutral-400 text-sm mb-4">Ofertas especiales y cierres exclusivos de contado.</p>
-                    <span class="text-emerald-400 text-sm font-medium flex items-center gap-1 group-hover:translate-x-1 transition-transform">Iniciar Simulación <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
-                </div>
-
-                <div class="glass p-6 rounded-2xl border border-white/10 hover:border-violet-500/50 transition-all group cursor-pointer" onclick="startRoleplay('Tech Pitch')">
-                    <div class="w-12 h-12 bg-violet-500/20 rounded-xl flex items-center justify-center mb-4">
-                        <i data-lucide="code-2" class="text-violet-400 w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-2">Pitch Técnico (React)</h3>
-                    <p class="text-neutral-400 text-sm mb-4">Vende tus servicios de desarrollo frontend a clientes internacionales.</p>
-                    <span class="text-violet-400 text-sm font-medium flex items-center gap-1 group-hover:translate-x-1 transition-transform">Iniciar Simulación <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
-                </div>
-            </div>
-        </div>
-
-        <div id="view-chat" class="hidden w-full h-[85vh] flex-col rounded-3xl border border-white/10 glass overflow-hidden relative shadow-2xl">
-            <div class="h-16 border-b border-white/10 flex items-center justify-between px-6 bg-neutral-900/90 backdrop-blur-xl">
-                <div class="flex items-center gap-3">
-                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                    <span class="font-medium text-sm md:text-base">Tutor IA - Sesión de Prueba (Demo)</span>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="injectCommand('MODO EXAMEN')" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-medium border border-white/10 transition-colors">Modo Examen</button>
-                    <button onclick="injectCommand('MODO NATIVO')" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-medium border border-white/10 transition-colors">Modo Nativo</button>
+                <!-- Mobile Menu Button -->
+                <div class="lg:hidden flex items-center z-50">
+                    <button id="mobile-menu-btn" class="text-white focus:outline-none p-2 transition-colors duration-300">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
                 </div>
             </div>
 
-            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
-                </div>
-
-            <div class="p-4 bg-neutral-900/90 border-t border-white/10 backdrop-blur-xl">
-                <div class="flex items-center gap-3 max-w-4xl mx-auto relative">
-                    <input 
-                        type="text" 
-                        id="chat-input"
-                        placeholder="Escribe tu respuesta aquí..." 
-                        class="flex-1 bg-neutral-800 border border-neutral-700 rounded-full px-6 py-3.5 text-neutral-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-neutral-500 text-sm md:text-base"
-                        autocomplete="off"
-                    />
-                    <button id="btn-send" class="p-3.5 bg-blue-600 hover:bg-blue-500 text-white transition-colors rounded-full flex items-center justify-center shadow-lg">
-                        <i data-lucide="send" class="w-5 h-5"></i>
+            <!-- Mobile Menu Dropdown (Habitual) -->
+            <div id="mobile-menu" class="absolute top-full left-0 mt-4 w-full bg-brand-navy/95 backdrop-blur-md shadow-2xl z-40 hidden flex-col border-t border-white/10 overflow-hidden transition-all duration-300 rounded-b-xl">
+                <div class="flex flex-col items-center py-8 space-y-6">
+                    <a href="#home" onclick="toggleMobileMenu()" class="text-lg font-display font-medium text-white hover:text-brand-cyan transition-colors uppercase tracking-widest">Legado</a>
+                    <a href="#tours" onclick="toggleMobileMenu()" class="text-lg font-display font-medium text-white hover:text-brand-cyan transition-colors uppercase tracking-widest">Experiencias</a>
+                    <a href="#guides" onclick="toggleMobileMenu()" class="text-lg font-display font-medium text-white hover:text-brand-cyan transition-colors uppercase tracking-widest">Secretos Locales</a>
+                    <button onclick="openContactModal(); toggleMobileMenu()" class="mt-4 bg-brand-orange text-white px-8 py-3 font-bold tracking-widest uppercase text-sm CRO-tracking-btn" data-cro="MobileNav_Contact_Btn">
+                        Diseñar Viaje
                     </button>
                 </div>
             </div>
         </div>
-    </main>
+    </nav>
 
-    <script>
-        lucide.createIcons();
+    <main class="min-h-screen">
 
-        let chatHistory = [];
-
-        // ----------------------------------------------------
-        // DATOS DE CURRICULUM MULTI-IDIOMA
-        // ----------------------------------------------------
-        const curriculums = {
-            'EN': [
-                { lvl: 'A1 - Básico', title: 'Fundamentos de Supervivencia', desc: 'Saludos, verbo To Be, rutinas diarias, números y direcciones.' },
-                { lvl: 'A2 - Pre-Intermedio', title: 'Navegación Social', desc: 'Pasado simple, futuro con Will/Going To, comparativos y correos básicos.' },
-                { lvl: 'B1 - Intermedio', title: 'Fluidez Conversacional', desc: 'Presente perfecto, condicionales, opiniones y Phrasal Verbs cotidianos.' },
-                { lvl: 'B2 - Intermedio Alto', title: 'Dominio Profesional', desc: 'Voz pasiva, Reported Speech, vocabulario de negocios, debates y presentaciones.' },
-                { lvl: 'C1 - Avanzado', title: 'Negociación y Liderazgo', desc: 'Jerga corporativa, idioms, estructuras complejas y ventas internacionales.' },
-                { lvl: 'C2 - Maestría', title: 'Comunicación de Élite', desc: 'Matices culturales, humor, persuasión y control absoluto del tono.' }
-            ],
-            'PT': [
-                { lvl: 'A1 - Básico', title: 'Fundamentos', desc: 'Saudações, verbos Ser/Estar/Ter, dias da semana, pronomes.' },
-                { lvl: 'A2 - Pre-Intermedio', title: 'Sobrevivência', desc: 'Pretérito perfeito e imperfeito, rotinas e viagens.' },
-                { lvl: 'B1 - Intermedio', title: 'Conversação', desc: 'Futuro do presente, conjunções, expressar opiniões (achismos).' },
-                { lvl: 'B2 - Intermedio Alto', title: 'Profissional', desc: 'Futuro do subjuntivo (crucial em PT), e-mails formais, mercado de trabalho.' },
-                { lvl: 'C1 - Avanzado', title: 'Negócios no Brasil', desc: 'Gírias corporativas, coloquialismos, negociações complexas.' },
-                { lvl: 'C2 - Maestría', title: 'Fluência Nativa', desc: 'Domínio de expressões idiomáticas regionais, tom e sutileza.' }
-            ],
-            'IT': [
-                { lvl: 'A1 - Básico', title: 'Basi', desc: 'Saluti, articoli, verbi regolari (Presente), presentazioni.' },
-                { lvl: 'A2 - Pre-Intermedio', title: 'Quotidianità', desc: 'Passato prossimo vs Imperfetto, vocabolario di viaggio e cibo.' },
-                { lvl: 'B1 - Intermedio', title: 'Espressione', desc: 'Condizionale, pronomi diretti/indiretti, dare consigli.' },
-                { lvl: 'B2 - Intermedio Alto', title: 'Lavoro', desc: 'Il Congiuntivo (presente e passato), linguaggio formale (dare del Lei).' },
-                { lvl: 'C1 - Avanzado', title: 'Diplomazia', desc: 'Periodo ipotetico complesso, lessico immobiliare e commerciale.' },
-                { lvl: 'C2 - Maestría', title: 'Padronanza', desc: 'Modi di dire, letteratura, sfumature formali vs informali.' }
-            ],
-            'FR': [
-                { lvl: 'A1 - Básico', title: 'Les Bases', desc: 'Salutations, Être/Avoir, présent, genres et articles.' },
-                { lvl: 'A2 - Pre-Intermedio', title: 'La Vie Quotidienne', desc: 'Passé composé, futur proche, vocabulaire touristique.' },
-                { lvl: 'B1 - Intermedio', title: 'Communication', desc: 'Imparfait vs Passé composé, pronoms (y, en), exprimer la volonté.' },
-                { lvl: 'B2 - Intermedio Alto', title: 'Le Français des Affaires', desc: 'Le subjonctif, conditionnel, réunions professionnelles.' },
-                { lvl: 'C1 - Avanzado', title: 'Négociation', desc: 'Structures complexes, vocabulaire de l\'immobilier et tech.' },
-                { lvl: 'C2 - Maestría', title: 'Maîtrise', desc: 'L\'argot (verlan), expressions idiomatiques, éloquence.' }
-            ]
-        };
-
-        // ----------------------------------------------------
-        // CONTROLADORES DE VISTAS Y LÓGICA DE UI
-        // ----------------------------------------------------
-        const views = ['view-hero', 'view-dashboard', 'view-roleplays', 'view-chat'];
-        
-        function switchView(viewId) {
-            views.forEach(v => document.getElementById(v).classList.add('hidden', 'view-hidden'));
-            const activeView = document.getElementById(`view-${viewId}`);
-            activeView.classList.remove('hidden', 'view-hidden');
-            if(viewId === 'chat') document.getElementById('chat-input').focus();
-        }
-
-        function loadCurriculum(langCode) {
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('bg-blue-600', 'text-white');
-                btn.classList.add('text-neutral-400');
-            });
-            const activeBtn = document.querySelector(`.lang-btn[data-lang="${langCode}"]`);
-            activeBtn.classList.remove('text-neutral-400');
-            activeBtn.classList.add('bg-blue-600', 'text-white');
-
-            const grid = document.getElementById('curriculum-grid');
-            grid.innerHTML = '';
-            curriculums[langCode].forEach(item => {
-                grid.innerHTML += `
-                    <div class="glass p-6 rounded-2xl border border-white/10 hover:border-blue-500/30 transition-all h-full">
-                        <div class="text-blue-400 font-bold text-sm mb-2">${item.lvl}</div>
-                        <h3 class="text-xl font-semibold mb-3 text-white">${item.title}</h3>
-                        <p class="text-neutral-400 text-sm leading-relaxed">${item.desc}</p>
-                    </div>
-                `;
-            });
-        }
-
-        // Cargar currículum en inglés por defecto al inicio
-        loadCurriculum('EN');
-
-        // ----------------------------------------------------
-        // LÓGICA DEL MOTOR DE CHAT SIMULADO
-        // ----------------------------------------------------
-        const chatInput = document.getElementById('chat-input');
-        const btnSend = document.getElementById('btn-send');
-        const chatMessages = document.getElementById('chat-messages');
-        let initialDiagnosisTriggered = false;
-
-        const appendMessage = (role, text) => {
-            const isUser = role === 'user';
-            const formattedText = text.replace(/\n/g, '<br/>');
-
-            const html = `
-                <div class="flex gap-4 ${isUser ? 'justify-end' : ''} mt-4 animate-fade-in">
-                    ${!isUser ? `
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-violet-600 flex-shrink-0 flex items-center justify-center mt-1 shadow-lg">
-                        <i data-lucide="bot" class="text-white w-4 h-4"></i>
-                    </div>` : ''}
+        <!-- ========================================== -->
+        <!-- VIEW 1: HOME & ABOUT (Minimal Luxury)      -->
+        <!-- ========================================== -->
+        <section id="home" class="relative">
+            <!-- Hero Immersivo -->
+            <div class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+                <div class="absolute inset-0 z-0">
+                    <!-- Imagen de alta gama, oscura y con contraste -->
+                    <img src="https://images.unsplash.com/photo-1596484552993-39d0901e6a10?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="Bacalar Aéreo" class="w-full h-full object-cover scale-105 animate-[slowZoom_20s_infinite_alternate]">
+                    <!-- Degradado oscuro elegante -->
+                    <div class="absolute inset-0 bg-gradient-to-b from-brand-navy/60 via-brand-navy/30 to-brand-navy/90"></div>
+                </div>
+                
+                <div class="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 flex flex-col items-center text-center mt-20">
+                    <span class="text-brand-cyan uppercase tracking-[0.3em] text-xs md:text-sm font-semibold mb-6 reveal-up">Hospitality Premium</span>
+                    <h1 class="font-display text-5xl md:text-7xl lg:text-8xl text-white leading-[1.1] mb-8 reveal-up" style="transition-delay: 100ms;">
+                        <span class="font-light">El Caribe Maya</span><br>
+                        <span class="font-black italic font-serif text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">a tu manera.</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-300 max-w-2xl font-light mb-12 reveal-up" style="transition-delay: 200ms;">
+                        Sin multitudes. Sin prisas. <span class="text-white font-medium">100% privado.</span> Diseñamos itinerarios a medida para los viajeros más exigentes del mundo.
+                    </p>
                     
-                    <div class="flex flex-col gap-1 max-w-[85%] ${isUser ? 'items-end' : ''}">
-                        <span class="text-xs text-neutral-500 font-medium ${isUser ? 'mr-1' : 'ml-1'}">${isUser ? 'Tú' : 'Tutor IA'}</span>
-                        <div class="${isUser ? 'bg-blue-600 rounded-tr-none text-white' : 'glass border border-white/10 rounded-tl-none text-neutral-100'} p-4 rounded-2xl leading-relaxed shadow-lg text-sm md:text-base ai-message-content">
-                            ${formattedText}
+                    <div class="flex flex-col sm:flex-row gap-6 reveal-up" style="transition-delay: 300ms;">
+                        <a href="#tours" class="bg-transparent border border-white text-white px-10 py-4 hover:bg-white hover:text-brand-navy transition-all duration-300 tracking-widest text-sm uppercase CRO-tracking-btn text-center" data-cro="Hero_Explore_Btn">
+                            Descubrir Colección
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Scroll Down Indicator -->
+                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center reveal-fade" style="transition-delay: 800ms;">
+                    <span class="text-white/50 text-xs tracking-widest uppercase mb-4">Descubrir</span>
+                    <div class="w-[1px] h-12 bg-white/30 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white animate-[scrollDown_2s_infinite]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Editorial About Section -->
+            <div class="bg-brand-navy py-32 relative overflow-hidden">
+                <!-- Tipografía gigante de fondo -->
+                <div class="absolute top-10 -left-10 font-display font-black text-[15rem] leading-none text-white/5 select-none pointer-events-none">
+                    2021
+                </div>
+
+                <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                        
+                        <!-- Texto Editorial -->
+                        <div class="lg:col-span-5 reveal-up">
+                            <h2 class="font-display text-4xl lg:text-5xl text-white font-light leading-tight mb-8">
+                                Nacimos en <span class="font-serif italic font-bold text-brand-orange">2021</span> para redefinir el viaje.
+                            </h2>
+                            <div class="w-12 h-[1px] bg-brand-cyan mb-8"></div>
+                            <p class="text-gray-400 font-light text-lg mb-6 leading-relaxed">
+                                Mientras el mundo cambiaba y las multitudes se volvían un problema, nosotros decidimos crear un santuario en movimiento. Experiencias sin filas, personalizadas hasta el último detalle y enfocadas en la verdadera esencia de Cancún y la Riviera Maya.
+                            </p>
+                            <p class="text-white font-medium text-lg leading-relaxed">
+                                5 años entregando el color real del paraíso, con una flota de lujo y el servicio de hospitalidad más exclusivo de la región.
+                            </p>
+                        </div>
+
+                        <!-- Imágenes Asimétricas -->
+                        <div class="lg:col-span-7 relative h-[600px] reveal-up" style="transition-delay: 200ms;">
+                            <div class="absolute top-0 right-0 w-3/4 h-4/5 img-zoom-hover">
+                                <img src="https://images.unsplash.com/photo-1544644181-1484b3fdfc62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Yate" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
+                            </div>
+                            <div class="absolute bottom-0 left-0 w-1/2 h-3/5 img-zoom-hover z-10 outline outline-8 outline-brand-navy">
+                                <img src="https://images.unsplash.com/photo-1518638150340-f706e86654de?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Cenote" class="w-full h-full object-cover">
+                            </div>
+                            <!-- Sello -->
+                            <div class="absolute top-1/2 left-1/4 transform -translate-x-1/2 -translate-y-1/2 bg-brand-cyan rounded-full w-24 h-24 flex items-center justify-center z-20 text-white text-center p-2 shadow-2xl">
+                                <span class="text-[10px] uppercase tracking-widest font-bold">Private<br>Only</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            `;
-            
-            chatMessages.insertAdjacentHTML('beforeend', html);
-            lucide.createIcons();
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        };
+            </div>
+        </section>
 
-        const showTyping = () => {
-            const html = `
-                <div class="flex gap-4 mt-4 animate-fade-in" id="typing-indicator">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-violet-600 flex-shrink-0 flex items-center justify-center mt-1">
-                        <i data-lucide="bot" class="text-white w-4 h-4"></i>
+        <!-- ========================================== -->
+        <!-- VIEW 2: TOURS (Editorial Grid)             -->
+        <!-- ========================================== -->
+        <section id="tours" class="bg-brand-sand py-32">
+            <div class="max-w-7xl mx-auto px-6 lg:px-12">
+                
+                <!-- Cabecera de Colección -->
+                <div class="flex flex-col md:flex-row justify-between items-end mb-20 reveal-up">
+                    <div class="max-w-2xl">
+                        <span class="text-brand-orange uppercase tracking-[0.2em] text-xs font-bold mb-4 block">La Colección</span>
+                        <h2 class="font-display text-4xl md:text-5xl text-brand-navy font-light">
+                            Experiencias <span class="font-serif italic font-bold">Signature</span>
+                        </h2>
                     </div>
-                    <div class="glass p-4 rounded-2xl rounded-tl-none border border-white/10 flex items-center gap-2 h-[52px]">
-                        <div class="w-2 h-2 bg-neutral-400 rounded-full animate-bounce"></div>
-                        <div class="w-2 h-2 bg-neutral-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                        <div class="w-2 h-2 bg-neutral-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                    <p class="text-gray-500 font-light mt-6 md:mt-0 max-w-sm md:text-right text-sm">
+                        Diseñadas para maximizar tu tiempo y sumergirte en la belleza auténtica del Caribe, lejos de las rutas turísticas habituales.
+                    </p>
+                </div>
+
+                <!-- Grid Editorial de Tours -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    
+                    <!-- Tour 1 -->
+                    <div class="group reveal-up cursor-pointer" onclick="openWhatsApp('Hola, me interesa la colección VIP: Chichén Itzá.')">
+                        <div class="w-full aspect-portrait overflow-hidden mb-6 relative">
+                            <img src="https://images.unsplash.com/photo-1601053075253-33bc212c449c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Chichen Itza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000">
+                            <!-- Overlay Hover -->
+                            <div class="absolute inset-0 bg-brand-navy/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                        </div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display font-semibold text-2xl text-brand-navy group-hover:text-brand-cyan transition-colors">Chichén Itzá VIP</h3>
+                            <span class="text-xs tracking-widest text-gray-400 font-medium uppercase mt-1">10 Hrs</span>
+                        </div>
+                        <div class="w-full h-[1px] bg-gray-300 my-4 group-hover:bg-brand-cyan transition-colors"></div>
+                        <p class="text-sm text-gray-500 font-light mb-4 line-clamp-2">
+                            Llegamos antes que los autobuses masivos. SUV Privada con A/C, Guía Exclusivo y nado en un cenote subterráneo premium.
+                        </p>
+                        <div class="inline-flex items-center text-xs font-bold tracking-widest text-brand-orange uppercase">
+                            Agendar <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                        </div>
+                    </div>
+
+                    <!-- Tour 2 -->
+                    <div class="group reveal-up cursor-pointer" style="transition-delay: 150ms;" onclick="openWhatsApp('Hola, me interesa la colección VIP: Bacalar.')">
+                        <div class="w-full aspect-portrait overflow-hidden mb-6 relative">
+                            <img src="https://images.unsplash.com/photo-1620617056627-c102bd53bbd3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Bacalar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000">
+                            <div class="absolute inset-0 bg-brand-navy/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                        </div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display font-semibold text-2xl text-brand-navy group-hover:text-brand-cyan transition-colors">Magia de Bacalar</h3>
+                            <span class="text-xs tracking-widest text-gray-400 font-medium uppercase mt-1">12 Hrs</span>
+                        </div>
+                        <div class="w-full h-[1px] bg-gray-300 my-4 group-hover:bg-brand-cyan transition-colors"></div>
+                        <p class="text-sm text-gray-500 font-light mb-4 line-clamp-2">
+                            Navega en pontón privado por canales secretos de la Laguna de los Siete Colores donde no entran embarcaciones grandes.
+                        </p>
+                        <div class="inline-flex items-center text-xs font-bold tracking-widest text-brand-orange uppercase">
+                            Agendar <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                        </div>
+                    </div>
+
+                    <!-- Tour 3 -->
+                    <div class="group reveal-up cursor-pointer" style="transition-delay: 300ms;" onclick="openWhatsApp('Hola, me interesa la colección VIP: Yate Isla Mujeres.')">
+                        <div class="w-full aspect-portrait overflow-hidden mb-6 relative">
+                            <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Yate Isla Mujeres" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000">
+                            <div class="absolute inset-0 bg-brand-navy/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                        </div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-display font-semibold text-2xl text-brand-navy group-hover:text-brand-cyan transition-colors">Isla Mujeres Yate</h3>
+                            <span class="text-xs tracking-widest text-gray-400 font-medium uppercase mt-1">6-8 Hrs</span>
+                        </div>
+                        <div class="w-full h-[1px] bg-gray-300 my-4 group-hover:bg-brand-cyan transition-colors"></div>
+                        <p class="text-sm text-gray-500 font-light mb-4 line-clamp-2">
+                            El lujo del Caribe a tu disposición. Tú decides el ritmo entre hacer snorkel en arrecifes o recorrer la isla. Bebidas Premium incluidas.
+                        </p>
+                        <div class="inline-flex items-center text-xs font-bold tracking-widest text-brand-orange uppercase">
+                            Agendar <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 3: GUIDES (FOMO & SEO)                -->
+        <!-- ========================================== -->
+        <section id="guides" class="bg-white py-32">
+            <div class="max-w-7xl mx-auto px-6 lg:px-12">
+                
+                <div class="text-center max-w-3xl mx-auto mb-20 reveal-up">
+                    <span class="text-brand-cyan uppercase tracking-[0.2em] text-xs font-bold mb-4 block">Insider Knowledge</span>
+                    <h2 class="font-display text-4xl md:text-5xl text-brand-navy font-light mb-6">
+                        Secretos <span class="font-serif italic font-bold">Locales</span>
+                    </h2>
+                    <p class="text-gray-500 font-light">
+                        Descubre lo que las agencias masivas omiten. Protege tu inversión y tiempo vacacional con nuestra inteligencia local.
+                    </p>
+                </div>
+
+                <!-- Lista Editorial (Minimalista) -->
+                <div class="max-w-4xl mx-auto border-t border-gray-200">
+                    
+                    <!-- Item 1 -->
+                    <article class="py-10 border-b border-gray-200 group flex flex-col md:flex-row gap-8 items-center cursor-pointer reveal-up" onclick="openWhatsApp('Hola, leí su artículo sobre Bacalar. Necesito un tour privado.')">
+                        <div class="md:w-1/3 aspect-[4/3] w-full overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Bacalar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0">
+                        </div>
+                        <div class="md:w-2/3">
+                            <span class="text-[10px] text-red-500 tracking-widest font-bold uppercase mb-2 block">Advertencia Local</span>
+                            <h3 class="font-display text-2xl md:text-3xl text-brand-navy font-semibold mb-3 group-hover:text-brand-cyan transition-colors">
+                                El color real del agua en Bacalar: La guía para evitar decepciones.
+                            </h3>
+                            <p class="text-gray-500 font-light text-sm mb-4">
+                                ¿Sabías que la luz del sol al mediodía cambia drásticamente cómo se ven los 7 colores? Descubre a qué hora exacta debes visitar.
+                            </p>
+                            <span class="text-xs font-bold tracking-widest text-brand-navy uppercase flex items-center">
+                                Leer Artículo <i class="fas fa-long-arrow-alt-right ml-2 text-brand-cyan"></i>
+                            </span>
+                        </div>
+                    </article>
+
+                    <!-- Item 2 -->
+                    <article class="py-10 border-b border-gray-200 group flex flex-col md:flex-row gap-8 items-center cursor-pointer reveal-up" onclick="openWhatsApp('Hola, leí sobre los errores en Isla Mujeres. Quiero cotizar un yate.')">
+                        <div class="md:w-1/3 aspect-[4/3] w-full overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1512450337299-87c2c9d00b1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Isla Mujeres" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0">
+                        </div>
+                        <div class="md:w-2/3">
+                            <span class="text-[10px] text-brand-cyan tracking-widest font-bold uppercase mb-2 block">Logística VIP</span>
+                            <h3 class="font-display text-2xl md:text-3xl text-brand-navy font-semibold mb-3 group-hover:text-brand-cyan transition-colors">
+                                3 errores críticos que arruinan tu visita a Isla Mujeres.
+                            </h3>
+                            <p class="text-gray-500 font-light text-sm mb-4">
+                                Tomar el ferry público en hora pico es un error de novato. Te contamos por qué rentar una embarcación privada es la única forma real de disfrutar.
+                            </p>
+                            <span class="text-xs font-bold tracking-widest text-brand-navy uppercase flex items-center">
+                                Leer Artículo <i class="fas fa-long-arrow-alt-right ml-2 text-brand-cyan"></i>
+                            </span>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 4: CONTACT & FUNNEL (High Conversion) -->
+        <!-- ========================================== -->
+        <section id="contact" class="bg-brand-navy py-32 relative overflow-hidden">
+            <!-- Fondo abstracto minimalista -->
+            <div class="absolute top-0 right-0 w-1/2 h-full bg-brand-cyan/5 blur-[150px] rounded-full pointer-events-none"></div>
+
+            <div class="max-w-4xl mx-auto px-6 lg:px-12 relative z-10">
+                <div class="text-center mb-16 reveal-up">
+                    <h2 class="font-display text-4xl md:text-6xl text-white font-light mb-6">
+                        Diseña tu <span class="font-serif italic font-bold">Experiencia</span>
+                    </h2>
+                    <p class="text-gray-400 font-light text-lg">
+                        Conecta directamente con nuestros Concierges. Sin intermediarios, respuestas inmediatas.
+                    </p>
+                </div>
+
+                <div class="bg-white/5 backdrop-blur-md p-8 md:p-12 border border-white/10 reveal-up">
+                    <form id="funnelForm" class="space-y-8" onsubmit="handleFormSubmit(event)">
+                        
+                        <!-- Inputs de Línea Simple (Minimalistas) -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            
+                            <div class="relative">
+                                <input type="text" id="f_name" required class="w-full bg-transparent border-b border-white/30 text-white py-3 focus:outline-none focus:border-brand-cyan transition-colors peer placeholder-transparent" placeholder="Tu Nombre">
+                                <label for="f_name" class="absolute left-0 -top-3.5 text-xs text-gray-400 uppercase tracking-widest font-semibold transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3.5 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-brand-cyan">Tu Nombre *</label>
+                            </div>
+                            
+                            <div class="relative">
+                                <select id="f_people" required class="w-full bg-transparent border-b border-white/30 text-white py-3 focus:outline-none focus:border-brand-cyan transition-colors appearance-none cursor-pointer">
+                                    <option value="" disabled selected class="text-gray-800">¿Cuántas personas viajan? *</option>
+                                    <option value="1-2" class="text-gray-800">1 a 2 personas (Pareja/Solo)</option>
+                                    <option value="3-5" class="text-gray-800">3 a 5 personas (Familia/Amigos)</option>
+                                    <option value="6-10" class="text-gray-800">6 a 10 personas (Grupo Mediano)</option>
+                                    <option value="10+" class="text-gray-800">Más de 10 personas (Grupo Grande)</option>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-0 top-4 text-white/50 pointer-events-none text-xs"></i>
+                            </div>
+
+                            <div class="relative">
+                                <input type="text" id="f_dates" class="w-full bg-transparent border-b border-white/30 text-white py-3 focus:outline-none focus:border-brand-cyan transition-colors peer placeholder-transparent" placeholder="Fechas Aproximadas">
+                                <label for="f_dates" class="absolute left-0 -top-3.5 text-xs text-gray-400 uppercase tracking-widest font-semibold transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3.5 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-brand-cyan">Fechas del Viaje</label>
+                            </div>
+
+                            <div class="relative">
+                                <select id="f_interest" class="w-full bg-transparent border-b border-white/30 text-white py-3 focus:outline-none focus:border-brand-cyan transition-colors appearance-none cursor-pointer">
+                                    <option value="Explorar opciones" class="text-gray-800">Destino de Interés</option>
+                                    <option value="Chichén Itzá / Ruinas" class="text-gray-800">Chichén Itzá / Arqueología</option>
+                                    <option value="Isla Mujeres / Yates" class="text-gray-800">Isla Mujeres / Yates</option>
+                                    <option value="Bacalar" class="text-gray-800">Laguna de Bacalar</option>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-0 top-4 text-white/50 pointer-events-none text-xs"></i>
+                            </div>
+                        </div>
+
+                        <div class="pt-8 text-center">
+                            <button type="submit" class="bg-brand-orange text-white px-12 py-5 font-bold tracking-widest uppercase hover:bg-white hover:text-brand-orange transition-all duration-300 w-full md:w-auto flex items-center justify-center mx-auto CRO-tracking-btn" data-cro="Form_Submit_WhatsApp">
+                                Conectar por WhatsApp <i class="fab fa-whatsapp ml-3 text-xl"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Editorial -->
+    <footer class="bg-[#030914] pt-20 pb-10 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="col-span-1 md:col-span-2">
+                    <span class="font-display font-black text-2xl text-white tracking-tighter mb-6 block">
+                        AMAZING<span class="text-brand-cyan">COLORS</span>
+                    </span>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed max-w-sm mb-8">
+                        Redefiniendo el turismo privado en el Caribe Mexicano desde 2021. Hospitalidad de lujo, sin multitudes.
+                    </p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-white/30 hover:text-brand-cyan transition-colors"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-white/30 hover:text-brand-cyan transition-colors"><i class="fab fa-facebook-f text-xl"></i></a>
+                        <a href="#" onclick="openWhatsApp('Hola, requiero asesoría')" class="text-white/30 hover:text-brand-cyan transition-colors"><i class="fab fa-whatsapp text-xl"></i></a>
                     </div>
                 </div>
-            `;
-            chatMessages.insertAdjacentHTML('beforeend', html);
-            lucide.createIcons();
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        };
+                
+                <div>
+                    <h4 class="text-white text-xs font-bold tracking-widest uppercase mb-6">Colección</h4>
+                    <ul class="space-y-4 text-sm font-light text-gray-500">
+                        <li><a href="#" class="hover:text-white transition-colors">Yates Privados</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Arqueología VIP</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Expediciones Cenotes</a></li>
+                    </ul>
+                </div>
 
-        const removeTyping = () => {
-            const el = document.getElementById('typing-indicator');
-            if(el) el.remove();
-        };
-
-        // MOTOR DE IA SIMULADO (Sin API Key)
-        const fetchSimulatedAIResponse = () => {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    removeTyping();
-                    const lastUserMessage = chatHistory[chatHistory.length - 1].content;
-                    let aiText = "";
-
-                    // Lógica para detectar el contexto y responder de forma simulada
-                    if (lastUserMessage.includes("[DIAGNÓSTICO INICIAL]")) {
-                        aiText = "¡Bienvenido a tu sistema de inmersión! Soy tu Tutor IA de Élite. Para calibrar tu ruta de aprendizaje, dime: \n\n1. ¿Qué idioma vamos a practicar hoy?\n2. ¿Cuál es tu nivel actual?\n3. ¿Cuál es tu objetivo principal (ej. negocios, viajes, programación)?";
-                    } 
-                    else if (lastUserMessage.includes("[ROLEPLAY]")) {
-                        aiText = "¡Entendido! Entrando en personaje para la simulación. \n\n*Iniciando entorno inmersivo...*\n\nHello! Thank you for the presentation. I'm very interested in the project, but I need to understand the ROI details before making a decision. Could you explain the main benefits?";
-                    }
-                    else if (lastUserMessage === 'MODO EXAMEN') {
-                        aiText = "⚙️ **MODO EXAMEN ACTIVADO** \n\nA partir de este momento, evaluaré estrictamente tu gramática, vocabulario y fluidez sin ayudarte. Al finalizar, te asignaré un nivel CEFR (A1-C2). \n\nLet's begin. Please introduce yourself and describe a recent professional challenge you successfully overcame.";
-                    }
-                    else if (lastUserMessage === 'MODO NATIVO') {
-                        aiText = "⚙️ **MODO NATIVO ACTIVADO** \n\nNo more training wheels. From now on, I will use slang, idioms, and natural pacing. Try to keep up! \n\nSo, what's been keeping you busy lately? Anything exciting going on at work?";
-                    }
-                    else {
-                        // Respuesta genérica de corrección
-                        aiText = `He analizado tu respuesta: "${lastUserMessage}". \n\n❌ **Tu estructura:** Se entiende, pero no suena natural.\n✅ **Corrección:** Intenta usar un vocabulario más directo.\n💬 **Como lo diría un nativo:** "That sounds great, let's proceed with the details." \n\n*(Nota: Esta es una versión demo estática. En la versión final, esta respuesta será generada dinámicamente por OpenAI).* \n\n¡Sigue practicando! ¿Qué me responderías a continuación?`;
-                    }
-
-                    chatHistory.push({ role: "assistant", content: aiText });
-                    appendMessage('ai', aiText);
-                    resolve();
-                }, 1500); // 1.5 segundos simulando que "escribe"
-            });
-        };
-
-        const handleSend = async () => {
-            const text = chatInput.value.trim();
-            if (!text) return;
+                <div>
+                    <h4 class="text-white text-xs font-bold tracking-widest uppercase mb-6">Contacto Directo</h4>
+                    <ul class="space-y-4 text-sm font-light text-gray-500">
+                        <li>Cancún, Quintana Roo</li>
+                        <li>concierge@amazingcolors.com</li>
+                        <li class="text-brand-cyan cursor-pointer" onclick="openWhatsApp('Hola, quisiera información.')">Hablar por WhatsApp</li>
+                    </ul>
+                </div>
+            </div>
             
-            chatInput.value = '';
-            chatInput.disabled = true;
-            btnSend.disabled = true;
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-[10px] uppercase tracking-widest text-gray-600 mb-4 md:mb-0">© 2026 Amazing Colors. All Rights Reserved.</p>
+                <div class="flex space-x-6 text-[10px] uppercase tracking-widest text-gray-600">
+                    <a href="#" class="hover:text-white transition-colors">Privacidad</a>
+                    <a href="#" class="hover:text-white transition-colors">Términos</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-            appendMessage('user', text);
-            chatHistory.push({ role: "user", content: text });
+    <!-- Botón Flotante de Contacto (Abre Formulario Modal) -->
+    <button onclick="openContactModal()" class="fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-brand-orange text-white px-6 py-4 rounded-none shadow-2xl flex items-center justify-center hover:bg-white hover:text-brand-orange hover:-translate-y-1 transition-all duration-300 z-40 CRO-tracking-btn font-bold tracking-widest uppercase text-xs md:text-sm" data-cro="Floating_Form_Btn">
+        Cotizar Ahora <i class="fas fa-envelope ml-3 text-lg"></i>
+    </button>
+
+    <!-- Modal de Contacto / Formulario Emergente -->
+    <div id="contact-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <!-- Backdrop oscuro y desenfocado -->
+        <div class="absolute inset-0 bg-brand-navy/90 backdrop-blur-sm cursor-pointer" onclick="closeContactModal()"></div>
+        
+        <!-- Contenido del Modal -->
+        <div class="relative w-full max-w-2xl bg-white p-8 md:p-12 shadow-2xl z-10 transform scale-95 transition-transform duration-300 mx-4" id="modal-content">
+            <button onclick="closeContactModal()" class="absolute top-6 right-6 text-brand-navy/50 hover:text-brand-orange transition-colors text-2xl focus:outline-none">
+                <i class="fas fa-times"></i>
+            </button>
             
-            showTyping();
-            await fetchSimulatedAIResponse();
+            <div class="text-center mb-10">
+                <span class="text-brand-orange uppercase tracking-[0.2em] text-xs font-bold mb-3 block">Hablemos</span>
+                <h3 class="font-display text-3xl text-brand-navy font-light">
+                    Diseña tu <span class="font-serif italic font-bold">Viaje</span>
+                </h3>
+            </div>
 
-            chatInput.disabled = false;
-            btnSend.disabled = false;
-            chatInput.focus();
-        };
+            <!-- Formulario Interno -->
+            <form id="modalFunnelForm" class="space-y-6" onsubmit="handleModalSubmit(event)">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="relative">
+                        <input type="text" id="m_name" required class="w-full bg-transparent border-b border-gray-300 text-brand-navy py-2 focus:outline-none focus:border-brand-orange transition-colors peer placeholder-transparent" placeholder="Nombre">
+                        <label for="m_name" class="absolute left-0 -top-3.5 text-xs text-gray-500 uppercase tracking-widest font-semibold transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-brand-orange">Tu Nombre *</label>
+                    </div>
+                    
+                    <div class="relative">
+                        <select id="m_people" required class="w-full bg-transparent border-b border-gray-300 text-brand-navy py-2 focus:outline-none focus:border-brand-orange transition-colors appearance-none cursor-pointer">
+                            <option value="" disabled selected class="text-gray-400">Tamaño del grupo *</option>
+                            <option value="1-2">1 a 2 personas</option>
+                            <option value="3-5">3 a 5 personas</option>
+                            <option value="6-10">6 a 10 personas</option>
+                            <option value="10+">Más de 10 personas</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-0 top-3 text-gray-400 pointer-events-none text-xs"></i>
+                    </div>
 
-        btnSend.addEventListener('click', handleSend);
-        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
+                    <div class="relative">
+                        <input type="text" id="m_dates" class="w-full bg-transparent border-b border-gray-300 text-brand-navy py-2 focus:outline-none focus:border-brand-orange transition-colors peer placeholder-transparent" placeholder="Fechas">
+                        <label for="m_dates" class="absolute left-0 -top-3.5 text-xs text-gray-500 uppercase tracking-widest font-semibold transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-brand-orange">Fechas del Viaje</label>
+                    </div>
 
-        async function triggerInitialDiagnosis() {
-            if(!initialDiagnosisTriggered) {
-                initialDiagnosisTriggered = true;
-                chatHistory.push({ role: "user", content: "[DIAGNÓSTICO INICIAL]" });
-                showTyping();
-                await fetchSimulatedAIResponse();
+                    <div class="relative">
+                        <select id="m_interest" class="w-full bg-transparent border-b border-gray-300 text-brand-navy py-2 focus:outline-none focus:border-brand-orange transition-colors appearance-none cursor-pointer">
+                            <option value="Explorar opciones" disabled selected class="text-gray-400">Interés Principal</option>
+                            <option value="Chichén Itzá / Ruinas">Arqueología & Cultura</option>
+                            <option value="Isla Mujeres / Yates">Yates & Navegación</option>
+                            <option value="Bacalar">Naturaleza & Cenotes</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-0 top-3 text-gray-400 pointer-events-none text-xs"></i>
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit" class="w-full bg-brand-navy text-white px-8 py-4 font-bold tracking-widest uppercase hover:bg-brand-orange transition-colors duration-300 flex items-center justify-center CRO-tracking-btn" data-cro="Modal_Form_Submit">
+                        Enviar por WhatsApp <i class="fab fa-whatsapp ml-3 text-xl"></i>
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Redes Sociales Mobile (dentro del modal) -->
+            <div class="mt-8 pt-6 border-t border-gray-100 flex justify-center space-x-6 lg:hidden">
+                <a href="#" class="text-brand-navy/50 hover:text-brand-orange transition-colors text-xl"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-brand-navy/50 hover:text-brand-orange transition-colors text-xl"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" onclick="openWhatsApp('Hola')" class="text-brand-navy/50 hover:text-brand-orange transition-colors text-xl"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONSTANTES & ANALÍTICA ---
+        const WHATSAPP_NUMBER = "5219981234567"; // Número de la empresa
+
+        // --- LÓGICA DEL MODAL DE CONTACTO ---
+        function openContactModal() {
+            const modal = document.getElementById('contact-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.remove('hidden');
+            // Timeout pequeño para permitir que 'display: flex' aplique antes de animar opacidad
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+            trackConversion('Open_Contact_Modal', {});
+        }
+
+        function closeContactModal() {
+            const modal = document.getElementById('contact-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function handleModalSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('m_name').value;
+            const people = document.getElementById('m_people').value;
+            const dates = document.getElementById('m_dates').value || 'Por definir';
+            const interest = document.getElementById('m_interest').value;
+
+            trackConversion('Modal_Lead_Submit', { size: people, interest: interest });
+
+            const message = `¡Hola Concierge!\nSoy ${name}. Quiero cotizar un viaje VIP:\n\n` +
+                            `👥 Grupo: ${people}\n` +
+                            `📅 Fechas: ${dates}\n` +
+                            `📍 Interés: ${interest}\n\n` +
+                            `¿Podrían ayudarme a diseñarlo?`;
+            openWhatsApp(message);
+            closeContactModal();
+        }
+
+        function openWhatsApp(message) {
+            trackConversion('Click_WhatsApp', { intent: message.substring(0, 20) });
+            const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('f_name').value;
+            const people = document.getElementById('f_people').value;
+            const dates = document.getElementById('f_dates').value || 'Por definir';
+            const interest = document.getElementById('f_interest').value;
+
+            trackConversion('Lead_Form_Submit', { size: people, interest: interest });
+
+            const message = `¡Hola Concierge de Amazing Colors!\nSoy ${name}. Me gustaría diseñar una experiencia VIP.\n\n` +
+                            `👥 Grupo: ${people}\n` +
+                            `📅 Fechas: ${dates}\n` +
+                            `📍 Interés principal: ${interest}\n\n` +
+                            `Solicito asesoría.`;
+            openWhatsApp(message);
+        }
+
+        // --- NAVIGATION & NAVBAR LOGIC ---
+        const nav = document.getElementById('main-nav');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        function toggleMobileMenu() {
+            if(mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('flex');
+            } else {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('flex');
             }
         }
 
-        async function startRoleplay(prompt) {
-            switchView('chat');
-            chatHistory.push({ role: "user", content: `[ROLEPLAY] ${prompt}` });
-            showTyping();
-            await fetchSimulatedAIResponse();
+        document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
+
+        function updateNavStyle() {
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-brand-navy', 'py-4', 'shadow-2xl');
+                nav.classList.remove('bg-transparent', 'py-6');
+            } else {
+                nav.classList.remove('bg-brand-navy', 'py-4', 'shadow-2xl');
+                nav.classList.add('bg-transparent', 'py-6');
+            }
         }
 
-        function injectCommand(commandText) {
-            chatInput.value = commandText;
-            handleSend();
+        window.addEventListener('scroll', updateNavStyle);
+
+        // --- SCROLL REVEAL ANIMATIONS (Intersection Observer) ---
+        function setupScrollAnimations() {
+            const reveals = document.querySelectorAll('.reveal-up, .reveal-fade');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        // Optional: Stop observing once revealed
+                        // observer.unobserve(entry.target); 
+                    }
+                });
+            }, {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            });
+
+            reveals.forEach(element => {
+                element.classList.remove('active'); // Reset para re-trigger
+                observer.observe(element);
+            });
         }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNavStyle();
+            setupScrollAnimations();
+            
+            // Setup Tracking Buttons
+            document.querySelectorAll('.CRO-tracking-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    trackConversion('Button_Click', { id: btn.getAttribute('data-cro') });
+                });
+            });
+            
+            // Pre-animar hero
+            setTimeout(() => {
+                document.querySelectorAll('#home .reveal-up').forEach(el => el.classList.add('active'));
+            }, 100);
+        });
+
     </script>
 </body>
 </html>
