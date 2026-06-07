@@ -17,6 +17,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Definición Global de Analíticas y Conversión -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function trackConversion(eventName, details) {
+            console.log(`[Analytics Event] ${eventName}`, details);
+            window.dataLayer.push({ event: eventName, ...details });
+        }
+    </script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -58,67 +67,6 @@
             width: 100vw; height: 100vh;
             z-index: 99999;
             pointer-events: none; 
-        }
-
-        /* Pantalla de Entrada de Marca */
-        #welcome-screen {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 50% 45%, #0c4d75 0%, #052c47 55%, #021726 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            z-index: 9998;
-            overflow: hidden;
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.2s ease;
-            touch-action: none; 
-        }
-
-        #welcome-screen.dismissed {
-            transform: translateY(-100vh);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* Olas SVG Animadas */
-        .ocean-waves {
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%;
-            height: 42vh; 
-            min-height: 220px;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .waves-svg {
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%; height: 100%;
-        }
-
-        .parallax > use {
-            animation: move-forever 22s cubic-bezier(.55,.5,.45,.5) infinite;
-        }
-        .parallax > use:nth-child(1) { animation-delay: -2s; animation-duration: 9s; }
-        .parallax > use:nth-child(2) { animation-delay: -4s; animation-duration: 13s; }
-        .parallax > use:nth-child(3) { animation-delay: -5s; animation-duration: 17s; }
-        .parallax > use:nth-child(4) { animation-delay: -7s; animation-duration: 25s; }
-
-        @keyframes move-forever {
-            0% { transform: translate3d(-90px, 0, 0); }
-            100% { transform: translate3d(85px, 0, 0); }
-        }
-
-        .vignette-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.15) 65%, rgba(0, 0, 0, 0.6) 100%);
-            z-index: 2;
-            pointer-events: none;
         }
 
         /* SPA CONTROLLER TRANSITIONS */
@@ -178,46 +126,13 @@
     <canvas id="particleCanvas"></canvas>
 
     <!-- ========================================== -->
-    <!-- WELCOME SCREEN (OLA PARALLAX INTERACTIVA)   -->
-    <!-- ========================================== -->
-    <div id="welcome-screen">
-        <div class="ocean-waves">
-            <svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
-                <defs>
-                    <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
-                </defs>
-                <g class="parallax">
-                    <use href="#gentle-wave" x="48" y="0" fill="rgba(12, 181, 214, 0.18)" />
-                    <use href="#gentle-wave" x="48" y="3" fill="rgba(247, 245, 240, 0.08)" />
-                    <use href="#gentle-wave" x="48" y="5" fill="rgba(245, 132, 26, 0.06)" />
-                    <use href="#gentle-wave" x="48" y="7" fill="rgba(5, 19, 41, 0.45)" />
-                </g>
-            </svg>
-        </div>
-        <div class="vignette-overlay"></div>
-        
-        <div class="welcome-content flex flex-col items-center z-10">
-            <img id="main-brand-logo" src="https://raw.githubusercontent.com/beamazingcolors/amazingcolors/main/HRR.png" alt="Amazing Colors Logo" class="w-64 max-w-[75vw] mb-8 drop-shadow-[0_10px_25px_rgba(0,0,0,0.6)] animate-pulse">
-            <h1 class="font-display text-4xl md:text-6xl lg:text-7xl font-bold tracking-[0.1em] text-white leading-tight mb-4 drop-shadow-[0_4px_15px_rgba(0,0,0,0.6)]">
-                Bienvenido a<br><span class="font-black italic text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-light to-white">Amazing Colors</span>
-            </h1>
-            <p class="welcome-subtitle text-sm md:text-lg text-slate-300 font-light tracking-widest max-w-xl mb-12 drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-                Explora nuestras experiencias exclusivas y comienza tu viaje de ensueño por el Caribe Mexicano.
-            </p>
-            <button class="welcome-btn bg-brand-accent text-white border border-[#ff9132] px-12 py-5 text-xs md:text-sm font-bold tracking-[0.25em] uppercase rounded-full cursor-pointer transition-all duration-300 shadow-[0_0_35px_rgba(12,181,214,0.7)] hover:shadow-[0_0_55px_rgba(245,132,26,0.9)] hover:scale-105 active:scale-95" onclick="startExperience()">
-                Comencemos la experiencia
-            </button>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
     <!-- INTERFAZ PRINCIPAL DEL SITIO (SPA CATALOG)  -->
     <!-- ========================================== -->
-    <div id="main-site-wrapper" class="bg-brand-pearl min-h-screen flex flex-col justify-between">
+    <div id="main-site-wrapper" class="bg-brand-pearl min-h-screen flex flex-col justify-between opacity-100">
         
         <div>
-            <!-- Cabecera de Marca (Clic para volver a Welcome) -->
-            <header class="site-brand-header flex flex-col items-center justify-center pt-16 pb-6 px-4 cursor-pointer" onclick="backToWelcome()">
+            <!-- Cabecera de Marca (Redirige suavemente al Inicio) -->
+            <header class="site-brand-header flex flex-col items-center justify-center pt-16 pb-6 px-4 cursor-pointer" onclick="navigateTo('home')">
                 <img src="logo.png" alt="Logo Amazing Colors" class="h-14 w-auto mb-4 object-contain object-center" onerror="this.style.display='none'">
                 <span class="font-display text-3xl md:text-5xl font-black tracking-[0.2em] text-brand-navy hover:text-brand-accent transition-colors duration-300 uppercase">Amazing Colors</span>
                 <p class="text-[9px] md:text-xs font-semibold uppercase tracking-[0.4em] text-brand-accent/80 mt-2">Elite Ocean Journeys</p>
@@ -253,7 +168,7 @@
                         <div class="reveal-up">
                             <span class="text-brand-accent tracking-widest text-xs font-bold uppercase mb-4 block">El Caribe Maya a tu manera</span>
                             <h2 class="font-display text-4xl lg:text-5xl text-brand-navy font-light leading-tight mb-8">
-                                Cancún no es solo un destino, <br>es un <span class="font-serif italic font-bold text-brand-cyan">estado de plenitud.</span>
+                                Cancún no es solo un destino, <br>es un <span class="font-serif italic font-bold text-brand-light">estado de plenitud.</span>
                             </h2>
                             <div class="w-12 h-[2px] bg-brand-accent mb-8"></div>
                             <p class="text-slate-600 font-light text-lg leading-relaxed mb-6">
@@ -285,7 +200,7 @@
                             <div class="border border-white/5 p-10 rounded-2xl bg-brand-dark hover:-translate-y-2 transition-transform duration-300 shadow-xl reveal-up">
                                 <i class="fas fa-water text-brand-light text-3xl mb-6"></i>
                                 <h3 class="font-display text-xl text-white font-semibold mb-4">El Arrecife Mesoamericano</h3>
-                                <p class="text-slate-300 font-light text-sm leading-relaxed">Frente a las costas descansa la segunda barrera de coral más grande del mundo. Un santuario de biodiversidad ideal para explorar de forma privada.</p>
+                                <p class="text-slate-300 font-light text-sm leading-relaxed">Frente a las costas descansa la segunda barra de coral más grande del mundo. Un santuario de biodiversidad ideal para explorar de forma privada.</p>
                             </div>
                             <div class="border border-white/5 p-10 rounded-2xl bg-brand-dark hover:-translate-y-2 transition-transform duration-300 shadow-xl reveal-up">
                                 <i class="fas fa-diaspora text-brand-accent text-3xl mb-6"></i>
@@ -373,7 +288,7 @@
                         <div class="reveal-up">
                             <span class="text-brand-accent tracking-widest text-xs font-bold uppercase mb-4 block">Nuestra Historia</span>
                             <h2 class="font-display text-4xl lg:text-5xl text-brand-navy font-light leading-tight mb-8">
-                                Nacidos en <span class="font-serif italic font-bold text-brand-accent">2021</span> para redefinir el lujo del viaje privado.
+                                Nacimos en <span class="font-serif italic font-bold text-brand-accent">2021</span> para redefinir el lujo del viaje privado.
                             </h2>
                             <div class="w-12 h-[2px] bg-brand-accent mb-8"></div>
                             <p class="text-slate-600 font-light text-lg leading-relaxed mb-6">
@@ -429,7 +344,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <article class="bg-white rounded-2xl shadow-xl overflow-hidden group cursor-pointer hover:-translate-y-2 transition-transform duration-300 reveal-up">
                             <div class="h-64 overflow-hidden relative">
-                                <img src="https://images.unsplash.com/photo-1620617056627-c102bd53bbd3?auto=format&fit=crop&w=800&q=80" alt="Bacalar" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" onerror="handleImgError(this, 'playas')">
+                                <img src="https://images.unsplash.com/photo-1620617056627-c102bd53bbd3?auto=format&fit=crop&w=800&q=80" alt="Bacalar" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700" onerror="handleImgError(this, 'playas')">
                             </div>
                             <div class="p-8">
                                 <span class="text-brand-light text-[10px] font-bold uppercase tracking-widest mb-2 block">Fotografía & Viaje</span>
@@ -441,7 +356,7 @@
 
                         <article class="bg-white rounded-2xl shadow-xl overflow-hidden group cursor-pointer hover:-translate-y-2 transition-transform duration-300 reveal-up" style="transition-delay: 100ms;">
                             <div class="h-64 overflow-hidden relative">
-                                <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80" alt="Isla Mujeres" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" onerror="handleImgError(this, 'yates')">
+                                <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80" alt="Isla Mujeres" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700" onerror="handleImgError(this, 'yates')">
                             </div>
                             <div class="p-8">
                                 <span class="text-brand-light text-[10px] font-bold uppercase tracking-widest mb-2 block">Logística Privada</span>
@@ -453,7 +368,7 @@
 
                         <article class="bg-white rounded-2xl shadow-xl overflow-hidden group cursor-pointer hover:-translate-y-2 transition-transform duration-300 reveal-up" style="transition-delay: 200ms;">
                             <div class="h-64 overflow-hidden relative">
-                                <img src="https://images.unsplash.com/photo-1518638150341-f706e86654de?auto=format&fit=crop&w=800&q=80" alt="Chichen Itza" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" onerror="handleImgError(this, 'arqueologia')">
+                                <img src="https://images.unsplash.com/photo-1518638150341-f706e86654de?auto=format&fit=crop&w=800&q=80" alt="Chichen Itza" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700" onerror="handleImgError(this, 'arqueologia')">
                             </div>
                             <div class="p-8">
                                 <span class="text-brand-light text-[10px] font-bold uppercase tracking-widest mb-2 block">Legado Maya</span>
@@ -514,7 +429,7 @@
         <!-- MODAL DE ZOOM & LIGHTBOX                   -->
         <!-- ========================================== -->
         <div id="image-zoom-modal" class="fixed inset-0 bg-brand-navy/98 z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeZoomModal()">
-            <button onclick="closeZoomModal()" class="absolute top-6 right-6 text-white text-4xl hover:text-brand-accent transition-colors z-50 focus:outline-none p-4">
+            <button onclick="closeZoomModal()" class="absolute top-6 right-6 text-white text-4xl hover:text-brand-orange transition-colors z-50 focus:outline-none p-4">
                 <i class="fas fa-times"></i>
             </button>
             <div class="relative max-w-5xl max-h-[80vh] overflow-hidden cursor-zoom-out p-2" id="zoom-container" onclick="event.stopPropagation()" onmousemove="zoomImage(event)" onmouseleave="resetZoomImage()">
@@ -594,21 +509,10 @@
 
         let fullData = [];
 
-        function startExperience() {
-            document.getElementById('welcome-screen').classList.add('dismissed');
-            document.getElementById('main-site-wrapper').classList.add('visible');
-        }
-
-        function backToWelcome() {
-            document.getElementById('welcome-screen').classList.remove('dismissed');
-            document.getElementById('main-site-wrapper').classList.remove('visible');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
         /* SISTEMA DE RETRY DE IMÁGENES INTEGRADAS */
         function handleImgError(img, fallbackCategory = 'general') {
             if (img.dataset.ultimateFailed) {
-                img.src = 'logo.png';
+                img.src = 'https://raw.githubusercontent.com/beamazingcolors/amazingcolors/main/HRR.png';
                 img.style.objectFit = 'contain';
                 img.style.padding = '2rem';
                 img.style.backgroundColor = '#051329';
@@ -618,7 +522,7 @@
             const currentSrc = img.src;
 
             // Motor de reintentos rápidos de extensión en la raíz o en bruto
-            if (currentSrc.includes('beamazingcolors')) {
+            if (currentSrc.includes('raw.githubusercontent.com') || currentSrc.includes('beamazingcolors')) {
                 const basePath = currentSrc.substring(0, currentSrc.lastIndexOf('.'));
                 const currentExt = currentSrc.substring(currentSrc.lastIndexOf('.')).toLowerCase();
                 
@@ -745,6 +649,50 @@
             return '';
         }
 
+        // PARSER DEL TSV ADAPTATIVO RFC 4180
+        function parseTSV(text) {
+            let rows = [];
+            let row = [];
+            let field = '';
+            let inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                let nextChar = text[i+1];
+                if (inQuotes) {
+                    if (char === '"') {
+                        if (nextChar === '"') {
+                            field += '"';
+                            i++; // Saltar siguiente comilla
+                        } else {
+                            inQuotes = false; // Cerrar comillas
+                        }
+                    } else {
+                        field += char;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                    } else if (char === '\t') {
+                        row.push(field);
+                        field = '';
+                    } else if (char === '\n' || char === '\r') {
+                        if (char === '\r' && nextChar === '\n') i++; 
+                        row.push(field);
+                        rows.push(row);
+                        row = [];
+                        field = '';
+                    } else {
+                        field += char;
+                    }
+                }
+            }
+            if (field || row.length > 0) {
+                row.push(field);
+                rows.push(row);
+            }
+            return rows;
+        }
+
         function getImgUrlByCodigo(codigoValue) {
             if (!codigoValue || codigoValue === '') return '';
             let fileName = codigoValue.trim();
@@ -761,25 +709,36 @@
             return GITHUB_RAW + encodeURIComponent(fileName);
         }
 
-        // PARSER DEL TSV ADAPTATIVO
         async function init() {
             try {
                 const response = await fetch(TSV_URL);
                 const text = await response.text();
-                // RFC 4180 robusto para soportar saltos de línea y tabulaciones en el Google Sheet
-                const rows = text.replace(/\r/g, '').split('\n').filter(r => r.trim() !== '').map(r => r.split('\t'));
+                
+                // Parser TSV robusto de doble comilla para evitar que se desalinee
+                const rows = parseTSV(text).filter(r => r.length > 0 && r.some(cell => cell.trim() !== ''));
+                if (rows.length < 2) return;
+                
                 const headers = rows[0].map(h => h.trim());
                 fullData = rows.slice(1).map(row => {
-                    let item = {}; headers.forEach((h, i) => { item[h] = row[i]?.trim(); }); return item;
+                    let item = {}; 
+                    headers.forEach((h, i) => { 
+                        item[h] = row[i]?.trim() || ''; 
+                    }); 
+                    return item;
                 });
                 
-                // Cargar por defecto la primera pestaña
-                filterCatalog('tour');
+                // Forzar el filtrado inicial del catálogo
+                const hash = window.location.hash.replace('#', '');
+                let initialSub = 'tour';
+                if (hash && hash.startsWith('catalog-')) {
+                    initialSub = hash.replace('catalog-', '');
+                }
+                filterCatalog(initialSub);
             } catch (err) { console.error("Error al obtener la base de datos:", err); }
         }
 
         function filterCatalog(category) {
-            // Sincronizar botones internos
+            // Sincronizar botones internos del catálogo
             document.querySelectorAll('#page-catalog button[id^="sub-nav-"]').forEach(btn => {
                 const isTarget = btn.id === `sub-nav-${category}`;
                 btn.classList.toggle('bg-brand-accent', isTarget);
@@ -811,29 +770,26 @@
             const grid = document.getElementById('catalog-grid'); 
             grid.innerHTML = '';
             
-            const filtered = fullData.filter(item => {
-                let tipoSheet = getCleanValue(item, ['TIPO', 'Tipo']).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                let catTarget = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                return tipoSheet.includes(catTarget);
-            });
+            const filtered = globalActivitiesFiltered(category);
             
             filtered.forEach((item, idx) => {
                 const card = document.createElement('div'); 
-                card.className = 'card';
+                card.className = 'card bg-white border border-brand-navy/5 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between';
                 let nombre = getCleanValue(item, ['Nombre', 'NOMBRE']);
                 card.onclick = () => openWhatsApp(`Deseo cotizar información sobre ${nombre}`);
                 
-                let codigo = getCleanValue(item, ['Codigo', 'Código', 'CDG', 'Catalogo']);
-                let imgUrl = getImgUrlByCodigo(codigo);
+                // Mapear desde la columna 'catalogo' o 'codigo' de Google Sheets
+                let catalogoCode = getCleanValue(item, ['Catalogo', 'Catálogo', 'Codigo', 'Código', 'CDG']);
+                let imgUrl = getImgUrlByCodigo(catalogoCode);
                 
                 let precio = getCleanValue(item, ['Precio', 'PRECIO']);
                 if (precio === '' || precio.toLowerCase() === 'consultar') {
                     precio = 'Momentos inolvidables';
                 }
 
-                // Generación de especificaciones dinámicas adicionales según columnas del Google Sheets
+                // Generación de especificaciones dinámicas adicionales
                 let extraSpecsHtml = '';
-                const excludedHeaders = ['nombre', 'codigo', 'codigo', 'tipo', 'precio', 'descriptivo', 'detalles', 'incluye:', 'catalogo'];
+                const excludedHeaders = ['nombre', 'codigo', 'codigo', 'tipo', 'precio', 'descriptivo', 'detalles', 'incluye:', 'catalogo', 'catalogo:'];
                 
                 for (let originalKey in item) {
                     let keyNormalized = originalKey.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
@@ -846,17 +802,17 @@
                         }
 
                         extraSpecsHtml += `
-                            <div class="spec-row">
-                                <span class="spec-label">${cleanLabel}:</span>
-                                <span class="spec-value">${val}</span>
+                            <div class="spec-row flex justify-between text-xs py-1 border-b border-slate-100 last:border-0">
+                                <span class="spec-label font-bold text-brand-navy uppercase tracking-wider">${cleanLabel}:</span>
+                                <span class="spec-value text-slate-500 text-right">${val}</span>
                             </div>
                         `;
                     }
                 }
 
                 card.innerHTML = `
-                    <div class="img-container group relative">
-                        ${imgUrl ? `<img src="${imgUrl}" onerror="handleImgError(this, '${category}s')" class="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105">` : ''}
+                    <div class="img-container group relative h-64 overflow-hidden bg-brand-navy">
+                        ${imgUrl ? `<img src="${imgUrl}" onerror="handleImgError(this, '${category}')" class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105">` : ''}
                         <div class="absolute top-4 left-4 bg-brand-light text-brand-navy text-[10px] tracking-[0.2em] uppercase font-bold px-3 py-1 shadow-lg rounded">
                             EXCLUSIVO
                         </div>
@@ -864,14 +820,24 @@
                             <i class="fas fa-search-plus text-sm"></i>
                         </button>
                     </div>
-                    <div class="card-info">
-                        <h2 class="card-title">${nombre}</h2>
-                        <p class="card-price">${precio}</p>
-                        ${extraSpecsHtml ? `<div class="card-extra-specs">${extraSpecsHtml}</div>` : ''}
+                    <div class="card-info p-6 flex flex-col justify-between flex-grow">
+                        <div>
+                            <h3 class="card-title text-xl font-bold font-display text-brand-navy mb-2">${nombre}</h3>
+                            <p class="card-price text-brand-accent font-semibold text-sm mb-4">${precio}</p>
+                        </div>
+                        ${extraSpecsHtml ? `<div class="card-extra-specs border-t border-dashed border-slate-200 pt-3 mt-4 flex flex-col gap-1">${extraSpecsHtml}</div>` : ''}
                     </div>
                 `;
                 grid.appendChild(card); 
                 setTimeout(() => card.classList.add('visible'), idx * 80);
+            });
+        }
+
+        function globalActivitiesFiltered(category) {
+            return fullData.filter(item => {
+                let tipoSheet = getCleanValue(item, ['TIPO', 'Tipo']).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                let catTarget = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return tipoSheet.includes(catTarget);
             });
         }
 
@@ -882,13 +848,11 @@
             
             if(currentActive === targetPage && !subCategory) return;
 
-            // Registrar conversiones de analítica e histórico de navegación
             const hash = subCategory ? `${pageId}-${subCategory}` : pageId;
             if(history.pushState) history.pushState(null, null, `#${hash}`);
             else location.hash = `#${hash}`;
             trackConversion('Page_View', { page: pageId, sub: subCategory });
 
-            // Scroll suave e instantáneo
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             if(currentActive) currentActive.classList.remove('active');
@@ -898,7 +862,6 @@
                 setTimeout(() => setupReveals(), 50);
             }
 
-            // Sincronizar catálogo interno si se accede a través del menú
             if(pageId === 'catalog') {
                 filterCatalog(subCategory || 'tour');
             }
@@ -908,6 +871,9 @@
                 const isCatalog = pageId === 'catalog' && link.id === 'btn-nav-catalog';
                 const isCurrent = link.id === `btn-nav-${pageId}` || isCatalog;
                 link.classList.toggle('active', isCurrent);
+                link.classList.toggle('text-brand-accent', isCurrent);
+                link.classList.toggle('border-b-2', isCurrent);
+                link.classList.toggle('border-brand-accent', isCurrent);
             });
         }
 
