@@ -1164,23 +1164,6 @@
         </div>
 
         <div class="bg-white p-8 md:p-12 rounded-xl shadow-xl border border-neutral-100 space-y-8 leading-relaxed" id="pol-content-area">
-          <h3 class="font-headline-md text-xl text-primary font-bold">1. Ocupación y Aforo Máximo</h3>
-          <p class="text-stone-700">El aforo máximo de Casa Búho Dorado es de 10 huéspedes en total, con un límite máximo de 8 adultos. Se permiten variaciones con niños siempre que no se excedan los 8 adultos ni el total de 10 personas (por ejemplo: 8 adultos y 2 niños, 6 adultos y 4 niños, 4 adultos y 6 niños, etc.). No se permiten visitas adicionales ni eventos multitudinarios no autorizados previamente por la administración.</p>
-
-          <h3 class="font-headline-md text-xl text-primary font-bold">2. Horarios de Check-in y Check-out</h3>
-          <p class="text-stone-700">El horario de entrada (Check-in) es a partir de las 3:00 PM y la salida (Check-out) debe realizarse antes de las 11:00 AM. Salidas tardías o entradas anticipadas están sujetas a disponibilidad y confirmación previa de Valentina.</p>
-
-          <h3 class="font-headline-md text-xl text-primary font-bold">3. Protección Ecosistémica y Tortugas Marinas</h3>
-          <p class="text-stone-700">Debido a que Akumal es un santuario protegido de anidación de tortugas marinas, se solicita apagar las luces exteriores directas hacia la playa después de las 10:00 PM durante la temporada de anidación y respetar en todo momento la flora y fauna de la reserva.</p>
-
-          <h3 class="font-headline-md text-xl text-primary font-bold">4. Normas de Convivencia y Ruido</h3>
-          <p class="text-stone-700">Para preservar la paz de la selva y las residencias vecinas, se aplica un horario de silencio moderado a partir de las 10:00 PM. No se permite música a volúmenes amplificados durante la noche.</p>
-
-          <h3 class="font-headline-md text-xl text-primary font-bold">5. Humo y Fuego</h3>
-          <p class="text-stone-700">Queda estrictamente prohibido fumar en las áreas interiores de las suites y salones. Se permite fumar exclusivamente en áreas exteriores designadas con ceniceros. Prohibido encender fogatas en la selva o áreas no acondicionadas.</p>
-
-          <h3 class="font-headline-md text-xl text-primary font-bold">6. Políticas de Cancelación y Depósito</h3>
-          <p class="text-stone-700">Las cancelaciones realizadas con más de 30 días de anticipación otorgan un reembolso completo del depósito. Cancelaciones posteriores estarán sujetas a la retención del anticipo conforme a las políticas del contrato de arrendamiento privado.</p>
         </div>
 
       </div>
@@ -1708,6 +1691,18 @@
         "pol-tag": "Normas de la Casa",
         "pol-title": "Políticas & Restricciones",
         "pol-desc": "Para asegurar una experiencia idílica y preservar el delicado ecosistema de Akumal, todos los huéspedes deben adherirse a las siguientes normas.",
+        "pol-1-title": "1. Ocupación y Aforo Máximo",
+        "pol-1-desc": "El aforo máximo de Casa Búho Dorado es de 10 huéspedes en total, con un límite máximo de 8 adultos. Se permiten variaciones con niños siempre que no se excedan los 8 adultos ni el total de 10 personas (por ejemplo: 8 adultos y 2 niños, 6 adultos y 4 niños, 4 adultos y 6 niños, etc.). No se permiten visitas adicionales ni eventos multitudinarios no autorizados previamente por la administración.",
+        "pol-2-title": "2. Horarios de Check-in y Check-out",
+        "pol-2-desc": "El horario de entrada (Check-in) es a partir de las 3:00 PM y la salida (Check-out) debe realizarse antes de las 11:00 AM. Salidas tardías o entradas anticipadas están sujetas a disponibilidad y confirmación previa de Valentina.",
+        "pol-3-title": "3. Protección Ecosistémica y Tortugas Marinas",
+        "pol-3-desc": "Debido a que Akumal es un santuario protegido de anidación de tortugas marinas, se solicita apagar las luces exteriores directas hacia la playa después de las 10:00 PM durante la temporada de anidación y respetar en todo momento la flora y fauna de la reserva.",
+        "pol-4-title": "4. Normas de Convivencia y Ruido",
+        "pol-4-desc": "Para preservar la paz de la selva y las residencias vecinas, se aplica un horario de silencio moderado a partir de las 10:00 PM. No se permite música a volúmenes amplificados durante la noche.",
+        "pol-5-title": "5. Humo y Fuego",
+        "pol-5-desc": "Queda estrictamente prohibido fumar en las áreas interiores de las suites y salones. Se permite fumar exclusivamente en áreas exteriores designadas con ceniceros. Prohibido encender fogatas en la selva o áreas no acondicionadas.",
+        "pol-6-title": "6. Políticas de Cancelación y Depósito",
+        "pol-6-desc": "Las cancelaciones realizadas con más de 30 días de anticipación otorgan un reembolso completo del depósito. Cancelaciones posteriores estarán sujetas a la retención del anticipo conforme a las políticas del contrato de arrendamiento privado.",
         "footer-desc": "Un portal diseñado para viajeros que aprecian la sofisticación arquitectónica, el respeto ecológico absoluto y el silencio caribeño de la Bahía de Akumal.",
         "footer-news": "Newsletter Exclusivo",
         "placeholder-newsletter": "Escribe tu correo",
@@ -1898,6 +1893,18 @@
         "pol-tag": "House Rules",
         "pol-title": "Policies & Restrictions",
         "pol-desc": "To ensure an idyllic experience and preserve Akumal's delicate ecosystem, all guests must strictly adhere to the following rules.",
+        "pol-1-title": "1. Occupancy and Maximum Capacity",
+        "pol-1-desc": "Casa Búho Dorado has a maximum capacity of 10 guests, with a limit of 8 adults. Variations with children are allowed as long as the 8-adult limit and the 10-person total are not exceeded (e.g., 8 adults and 2 children, 6 adults and 4 children, etc.). No additional visitors or large unauthorized events are allowed.",
+        "pol-2-title": "2. Check-in and Check-out Times",
+        "pol-2-desc": "Check-in time is from 3:00 PM onwards, and check-out must be before 11:00 AM. Late departures or early arrivals are subject to availability and prior confirmation from Valentina.",
+        "pol-3-title": "3. Ecosystem Protection and Sea Turtles",
+        "pol-3-desc": "Because Akumal is a protected sea turtle nesting sanctuary, we request that you turn off direct exterior lights toward the beach after 10:00 PM during nesting season and respect the flora and fauna of the reserve at all times.",
+        "pol-4-title": "4. Community and Noise Rules",
+        "pol-4-desc": "To preserve the peace of the jungle and neighboring residences, moderate quiet hours apply from 10:00 PM. No amplified music is permitted at night.",
+        "pol-5-title": "5. Smoke and Fire",
+        "pol-5-desc": "Smoking is strictly prohibited inside the suites and halls. Smoking is allowed exclusively in designated exterior areas equipped with ashtrays. Starting fires in the jungle or non-designated areas is prohibited.",
+        "pol-6-title": "6. Cancellation and Deposit Policies",
+        "pol-6-desc": "Cancellations made more than 30 days in advance provide a full refund of the deposit. Subsequent cancellations are subject to the retention of the advance payment in accordance with the terms of the private lease contract.",
         "footer-desc": "A portal crafted for discerning travelers who appreciate refined organic architecture, absolute ecological respect, and the Caribbean silence of Akumal Bay.",
         "footer-news": "Exclusive Newsletter",
         "placeholder-newsletter": "Enter your email",
@@ -2129,6 +2136,7 @@
       });
 
       populateDynamicContent(lang);
+      populatePoliticas(lang);
     }
 
     function populateDynamicContent(lang) {
@@ -2183,6 +2191,26 @@
           `;
         }
       }
+    }
+
+    function populatePoliticas(lang) {
+      const polArea = document.getElementById('pol-content-area');
+      if (!polArea) return;
+      const langDict = dictionary[lang];
+      polArea.innerHTML = `
+        <h3 class="font-headline-md text-xl text-primary font-bold">${langDict['pol-1-title']}</h3>
+        <p class="text-stone-700">${langDict['pol-1-desc']}</p>
+        <h3 class="font-headline-md text-xl text-primary font-bold">${langDict['pol-2-title']}</h3>
+        <p class="text-stone-700">${langDict['pol-2-desc']}</p>
+        <h3 class="font-headline-md text-xl text-primary font-bold">${langDict['pol-3-title']}</h3>
+        <p class="text-stone-700">${langDict['pol-3-desc']}</p>
+        <h3 class="font-headline-md text-xl text-primary font-bold">${langDict['pol-4-title']}</h3>
+        <p class="text-stone-700">${langDict['pol-4-desc']}</p>
+        <h3 class="font-headline-md text-xl text-primary font-bold">${langDict['pol-5-title']}</h3>
+        <p class="text-stone-700">${langDict['pol-5-desc']}</p>
+        <h3 class="font-headline-md text-xl text-primary font-bold">${langDict['pol-6-title']}</h3>
+        <p class="text-stone-700">${langDict['pol-6-desc']}</p>
+      `;
     }
 
     function validateCapacity(adultsElId, childrenElId) {
